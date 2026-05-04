@@ -2,6 +2,7 @@ modelRoles:
   default: deepseek/deepseek-v4-flash
   smol: deepseek/deepseek-v4-flash
   slow: deepseek/deepseek-v4-pro:xhigh
+  task: deepseek/deepseek-v4-flash
 intentTracing: false
 skills: 
   enabled: true
