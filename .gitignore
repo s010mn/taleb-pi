@@ -1,0 +1,22 @@
+# 密钥与本地缓存，永远不提交
+.env
+*.local
+
+# oh-my-pi 运行时产物
+sessions/
+logs/
+cache/
+plugins/
+node_modules/
+
+# 编译产物
+dist/
+*.js.map
+*.d.ts.map
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

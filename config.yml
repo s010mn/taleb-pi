@@ -1,0 +1,49 @@
+# taleb-pi 全局配置
+# 说明：本文件被 oh-my-pi 加载为 ~/.omp/agent/config.yml
+
+# ─── 模型 ──────────────────────────────────────
+# 角色模型：思考代理只用三档
+#   default → 主模型（深度推理）
+#   smol    → 轻量分类（IntentGate 用）
+#   slow    → 长上下文/最强推理（脆弱性深扫描）
+models:
+  default: anthropic/claude-sonnet-4-5
+  smol: anthropic/claude-haiku-4-5
+  slow: anthropic/claude-opus-4-1
+
+# ─── 系统提示词 ───────────────────────────────
+# SYSTEM.md 自动覆盖默认提示词，无需在此配置
+
+# ─── 主题 ─────────────────────────────────────
+theme: dark
+
+# ─── 启用 Intent Tracing ───────────────────────
+# 让模型在每次工具调用前用 _i 字段声明"认识论赌注"
+# 这是 Skin in the Game 在工具层的体现
+intentTracing: true
+
+# ─── 技能与规则 ────────────────────────────────
+skills:
+  enabled: true
+  enableSkillCommands: true
+
+rules:
+  enabled: true
+
+# ─── 关闭与代码相关的内置 provider ─────────────
+# Via Negativa：思考代理不需要 cursor/claude-code 兼容层
+disabledProviders:
+  - cursor
+  - windsurf
+  - cline
+
+# ─── 显示 ─────────────────────────────────────
+display:
+  showIntent: true        # 显示模型每次调用工具时声明的 _i
+  showTokenStats: true
+
+# ─── 扩展 ─────────────────────────────────────
+# extensions/ 目录会被自动发现，无需在此列出
+# 如需关闭某个扩展：
+# disabledExtensions:
+#   - extension:taleb-overlay
