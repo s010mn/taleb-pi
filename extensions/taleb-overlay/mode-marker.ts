@@ -10,6 +10,10 @@
  * 模式持续：
  * - 显式切换：会话生命周期内持续，直到 /exit-mode 或切到其他模式
  * - 自动分类：仅当前轮（TTSR / Transient System Reminder 风格）
+ *
+ * 决策记录：曾经考虑过按模式映射 thinking budget（via-negativa = medium 等），
+ * 但用户默认就是 xhigh——我们去"调低"反而是医源性损伤。
+ * Via Negativa：不动 thinking level，把这件事还给用户的全局设置。
  */
 
 import type { TalebIntent } from "./intent-gate.js";

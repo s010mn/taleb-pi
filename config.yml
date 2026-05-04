@@ -1,5 +1,5 @@
 modelRoles: 
-  default: deepseek/deepseek-v4-flash
+  default: deepseek/deepseek-v4-pro:xhigh
   smol: deepseek/deepseek-v4-flash
   slow: deepseek/deepseek-v4-pro:xhigh
   task: deepseek/deepseek-v4-flash
@@ -18,5 +18,5 @@ disabledExtensions:
 display: 
   showIntent: false
   showTokenStats: true
-hideThinkingBlock: true
+hideThinkingBlock: false
 lastChangelogVersion: 14.6.6
