@@ -1,7 +1,7 @@
 ---
 name: skin-in-the-game
 description: 切肤之痛——评估任何主张/建议/预测前先问提议者是否承担后果
-ttsrTrigger: (专家|预测|建议|分析师|经济学家|权威|大V|意见领袖|预言|论断|expert|predict|forecast|analyst|economist|guru|pundit|recommend|advise)
+alwaysApply: true
 ---
 
 # Skin in the Game / 切肤之痛

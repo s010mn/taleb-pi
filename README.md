@@ -13,22 +13,36 @@
 
 ## 安装（Windows）
 
+oh-my-pi **基于 bun 运行时**（不是 Node）。`npm i` 只装 wrapper，真启动时调用的是 `bun.exe`。
+
 ```powershell
-# 1. 安装 oh-my-pi
-npm i -g @oh-my-pi/pi-coding-agent
+# 1. 安装 bun（一次性，全局）
+irm bun.sh/install.ps1 | iex
+# 装完后重开 PowerShell 让 PATH 生效，或：
+$env:Path += ";$env:USERPROFILE\.bun\bin"
 
-# 2. 把本仓库链接为 ~/.omp/agent（管理员 PowerShell）
-Remove-Item -Recurse -Force "$env:USERPROFILE\.omp\agent" -ErrorAction SilentlyContinue
-New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.omp\agent" -Target "C:\Users\ming\taleb-pi"
+# 2. 通过 bun 安装 oh-my-pi
+bun add -g @oh-my-pi/pi-coding-agent
 
-# 或不用软链：
+# 3. 让 oh-my-pi 把本仓库当作 agent 配置根
 $env:PI_CODING_AGENT_DIR = "C:\Users\ming\taleb-pi"
+# 想永久生效：
+[Environment]::SetEnvironmentVariable("PI_CODING_AGENT_DIR", "C:\Users\ming\taleb-pi", "User")
+
+# 或不用环境变量，用软链（需要管理员 PowerShell）：
+# Remove-Item -Recurse -Force "$env:USERPROFILE\.omp\agent" -ErrorAction SilentlyContinue
+# New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.omp\agent" -Target "C:\Users\ming\taleb-pi"
 ```
 
-复制环境变量模板：
+填入 API key（仓库内 `.env` 已在 `.gitignore`，不会进 git）：
 ```powershell
 Copy-Item .env.example .env
-# 编辑 .env 填入 ANTHROPIC_API_KEY 等
+# 编辑 .env 填入 DEEPSEEK_API_KEY 或 ANTHROPIC_API_KEY
+```
+
+启动：
+```powershell
+omp
 ```
 
 ## 目录结构
@@ -84,8 +98,8 @@ taleb-pi/
 ## 跟随上游
 
 ```powershell
-npm update -g @oh-my-pi/pi-coding-agent  # 拉最新内核
+bun update -g @oh-my-pi/pi-coding-agent  # 拉最新内核（bun 是真正的运行时）
 git -C C:\Users\ming\taleb-pi pull       # 拉你自己的配置（如果托管了）
 ```
 
-两者完全解耦。
+内核与配置完全解耦——升级 oh-my-pi 不会动你这个仓库的任何文件。

@@ -1,7 +1,7 @@
 ---
 name: asymmetry-and-exposure
 description: 暴露面 > 概率估计——遇到"会不会发生"的提问时强制重构为"如果发生损失多大"
-ttsrTrigger: (会不会|可能性|概率|多大几率|会发生吗|预测|可能吗|will it|probability|chance|likelihood|likely)
+alwaysApply: true
 ---
 
 # Asymmetry & Exposure / 不对称与暴露面

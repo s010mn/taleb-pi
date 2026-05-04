@@ -1,7 +1,7 @@
 ---
 name: narrative-fallacy
 description: 叙事谬误警报——警惕事后构造的因果故事
-ttsrTrigger: (因为|所以|导致|引起|造成|解释|是因为|根本原因|背后逻辑|because|therefore|caused|due to|reason is|root cause|explains why)
+alwaysApply: true
 ---
 
 # Narrative Fallacy / 叙事谬误

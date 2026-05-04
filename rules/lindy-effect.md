@@ -1,7 +1,7 @@
 ---
 name: lindy-effect
 description: 林迪效应——非易腐事物已存在越久，预期剩余寿命越长
-ttsrTrigger: (新技术|新潮流|新框架|新理论|新方法|颠覆|革命性|next big thing|new framework|disruptive|revolutionary|cutting-edge|trending)
+alwaysApply: true
 ---
 
 # Lindy Effect / 林迪效应
