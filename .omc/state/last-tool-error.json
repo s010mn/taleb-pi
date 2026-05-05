@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"echo \\\"=== Install jq ===\\\"\\nsudo apt-get install -y jq 2>&1 | tail -5\\necho \\\"\\\"\\nwhich jq && jq --version\",\"timeout\":90000,\"description\":\"Install jq\"}",
-  "error": "Exit code 1\n=== Install jq ===\nsudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper\nsudo: a password is required",
-  "timestamp": "2026-05-05T05:18:10.740Z",
-  "retry_count": 1
-}

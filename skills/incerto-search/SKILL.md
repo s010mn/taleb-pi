@@ -10,7 +10,7 @@ Query the BM25-indexed Incerto corpus (Fooled by Randomness, The Black Swan, The
 ## Usage
 
 ```bash
-bun run .omc/incerto/scripts/search.ts "<query>"
+bun run scripts/incerto/scripts/search.ts "<query>"
 ```
 
 Optional flags:
@@ -21,7 +21,7 @@ Optional flags:
 Returns top-K ranked passages, each with:
 - Book title and chapter number
 - ~200-character preview of the passage
-- Path to the full chunk file under `.omc/incerto/chunks/<slug>/`
+- Path to the full chunk file under `scripts/incerto/chunks/<slug>/`
 
 Read the returned chunk file in full when the preview is not enough — every chunk is ~500 tokens, plain markdown with frontmatter.
 
@@ -44,5 +44,5 @@ For non-numbered sections (frontmatter, glossary, prologue, etc.), use the `role
 
 ## Side effect
 
-Each invocation appends one line to `.omc/incerto/query-log.jsonl` for traceability:
+Each invocation appends one line to `scripts/incerto/query-log.jsonl` for traceability:
 `{ ts, q, top_chunk_paths }`. This is intentional — it lets a reviewer reconstruct what evidence each MAGI agent retrieved.

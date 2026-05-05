@@ -1,0 +1,19 @@
+---
+book: The Black Swan
+slug: black-swan
+chapter: 0
+role: prologue
+chunk_index: 4
+isbn: 9780679604181
+source_file: Tale_9780679604181_epub_prl_r1.xhtml
+---
+
+But there is a deeper question: What are our minds made for? It looks as if we have the wrong user’s manual. Our minds do not seem made to think and introspect; if they were, things would be easier for us today, but then we would not be here today and I would not have been here to talk about it—my counterfactual, introspective, and hard-thinking ancestor would have been eaten by a lion while his nonthinking but faster-reacting cousin would have run for cover. Consider that thinking is time-consuming and generally a great waste of energy, that our predecessors spent more than a hundred million years as nonthinking mammals and that in the blip in our history during which we have used our brain we have used it on subjects too peripheral to matter. Evidence shows that we do much less thinking than we believe we do—except, of course, when we think about it.
+
+A NEW KIND OF INGRATITUDE
+
+It is quite saddening to think of those people who have been mistreated by history. There were the poètes maudits, like Edgar Allan Poe or Arthur Rimbaud, scorned by society and later worshipped and force-fed to schoolchildren. (There are even schools named after high school dropouts.) Alas, this recognition came a little too late for the poet to get a serotonin kick out of it, or to prop up his romantic life on earth. But there are even more mistreated heroes—the very sad category of those who we do not know were heroes, who saved our lives, who helped us avoid disasters. They left no traces and did not even know that they were making a contribution. We remember the martyrs who died for a cause that we knew about, never those no less effective in their contribution but whose cause we were never aware of—precisely because they were successful. Our ingratitude toward the poètes maudits fades completely in front of this other type of thanklessness. This is a far more vicious kind of ingratitude: the feeling of uselessness on the part of the silent hero. I will illustrate with the following thought experiment.
+
+Assume that a legislator with courage, influence, intellect, vision, and perseverance manages to enact a law that goes into universal effect and employment on September 10, 2001; it imposes the continuously locked bulletproof doors in every cockpit (at high costs to the struggling airlines)—just in case terrorists decide to use planes to attack the World Trade Center in New York City. I know this is lunacy, but it is just a thought experiment (I am aware that there may be no such thing as a legislator with intellect, courage, vision, and perseverance; this is the point of the thought experiment). The legislation is not a popular measure among the airline personnel, as it complicates their lives. But it would certainly have prevented 9/11.
+
+The person who imposed locks on cockpit doors gets no statues in public squares, not so much as a quick mention of his contribution in his obituary. “Joe Smith, who helped avoid the disaster of 9/11, died of complications of liver disease.” Seeing how superfluous his measure was, and how it squandered resources, the public, with great help from airline pilots, might well boot him out of office. Vox clamantis in deserto. He will retire depressed, with a great sense of failure. He will die with the impression of having done nothing useful. I wish I could go attend his funeral, but, reader, I can’t find him. And yet, recognition can be quite a pump. Believe me, even those who genuinely claim that they do not believe in recognition, and that they separate labor from the fruits of labor, actually get a serotonin kick from it. See how the silent hero is rewarded: even his own hormonal system will conspire to offer no reward.

@@ -15,19 +15,18 @@ node_modules/
 *.db-shm
 *.db-wal
 
-# Incerto 权威源（19MB 二进制；在 .omc/incerto/ 处理后不需要进 git）
+# Incerto 权威源（19MB 二进制；处理后不需要进 git）
 incerto-5-book-bundle.epub
 incerto-5-book-bundle.epub:Zone.Identifier
 
 # Incerto 运行时产物（脚本进 git，构建出来的索引/分块/日志不进——可以本地从 epub 重建）
-.omc/incerto/chunks/
-.omc/incerto/index.json
-.omc/incerto/query-log.jsonl
-.omc/incerto/bun.lock
-.omc/incerto/bun.lockb
+scripts/incerto/chunks/
+scripts/incerto/index.json
+scripts/incerto/query-log.jsonl
+scripts/incerto/bun.lock
+scripts/incerto/bun.lockb
+scripts/incerto/node_modules/
 
-# MAGI 运行时调试产物（本地审查用，不提交）
-.omc/qa/runs/
 
 # 编译产物
 dist/

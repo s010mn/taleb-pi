@@ -1,0 +1,8 @@
+1|financial-decision|Should I take a job offer paying 30% more at a less stable startup, when I have 4 months of savings?
+2|system-design|Should our 50-engineer team migrate from a monolith to microservices to "scale better"?
+3|life-choice|Should I move from Beijing to Berlin for a research role with no return guarantee?
+4|ethical-dilemma|Is it acceptable to use AI to draft a eulogy for a parent's funeral?
+5|factual-claim|Was the COVID-19 pandemic a Black Swan event by Taleb's own definition?
+6|technical-evaluation|Should we replace REST with GraphQL for our public API serving 200 enterprise customers?
+7|geopolitical|Will China's economy overtake the US in nominal GDP by 2035?
+8|personal-habit|Should I quit social media entirely (no Twitter, Instagram, TikTok) for 12 months?

@@ -74,11 +74,14 @@ taleb-pi/
 │   ├── pre-mortem.md                # BALTHASAR-2 — Tail-Risk Guardian
 │   ├── antifragility-scout.md       # CASPER-3 — Convexity Seeker
 │   └── magi-synthesizer.md          # vote classifier (3-0 / 2-1 / 1-1-1)
-├── .omc/incerto/                    # BM25-indexed Incerto corpus (built post-deploy)
-│   ├── chunks/                       # ~500-token chapter-aware markdown
-│   ├── index.json                    # BM25 index
-│   ├── query-log.jsonl               # frequency tracker for crystallization
-│   └── scripts/search.ts             # query script invoked by incerto-search skill
+├── scripts/             # Build + utility scripts (no runtime payload by default)
+│   ├── incerto/
+│   │   ├── scripts/                 # parse-epub.py, build-index.ts, search.ts
+│   │   ├── package.json             # bun deps for the search/build scripts
+│   │   ├── chunks/                  # built locally, gitignored (~5MB)
+│   │   ├── index.json               # built locally, gitignored (~3MB)
+│   │   └── query-log.jsonl          # appended at runtime, gitignored
+│   └── qa/scripts/                  # check-register.sh, check-positive-register.sh
 └── AGENTS.md            # Meta-layer context (when editing this repo itself)
 ```
 

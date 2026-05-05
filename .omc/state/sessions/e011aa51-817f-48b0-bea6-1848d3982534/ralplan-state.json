@@ -1,0 +1,11 @@
+{
+  "active": true,
+  "started_at": "2026-05-05T00:31:19.056Z",
+  "current_phase": "ralplan",
+  "original_prompt": "/ralplan 更新计划 我想加一个功能 普通的时候还像以前一样调用rule注入prompt，输入 /magi 才激活我们设置的这个超强模式",
+  "session_id": "e011aa51-817f-48b0-bea6-1848d3982534",
+  "project_path": "/home/ming/taleb-pi",
+  "awaiting_confirmation": true,
+  "awaiting_confirmation_set_at": "2026-05-05T00:31:19.056Z",
+  "last_checked_at": "2026-05-05T00:31:19.056Z"
+}
