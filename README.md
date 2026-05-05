@@ -1,105 +1,116 @@
 # taleb-pi
 
-把 [oh-my-pi](https://github.com/can1357/oh-my-pi) 调教成一个**塔勒布式思考代理**——用反脆弱、Via Negativa、Skin in the Game、叙事谬误等框架来重塑你的思考过程，而不是写代码。
+Tune [oh-my-pi](https://github.com/can1357/oh-my-pi) into a **Nassim Taleb-style thinking agent** — using antifragility, Via Negativa, Skin in the Game, and the narrative-fallacy critique to reshape how you reason. Code is subordinate to thinking.
 
-> 这是一个**纯配置 overlay**——不 fork、不改源码。
-> oh-my-pi 升级时直接 `npm update -g`，零合并冲突。
+> Pure configuration overlay — no fork, no source patches.
+> When oh-my-pi releases an update: `bun update -g`, zero merge conflicts.
 
-## 设计原则
+## Design Principles
 
-- **中文优先，中英双识**：所有 ttsrTrigger 正则、IntentGate 关键词、Mode Markers 都同时匹配中英文
-- **Via Negativa**：能用 markdown 解决的不写 TypeScript；能用 rule 解决的不写 extension
-- **跟随上游**：内核来自 `@oh-my-pi/pi-coding-agent`，本仓库只是 `~/.omp/agent/` 的内容
+- **Via Negativa first**: Every addition must justify itself. Delete before creating. Markdown over TypeScript. Rules over extensions.
+- **MAGI tribunal opt-in**: Default mode delivers persistent Taleb framing through `alwaysApply` rules. Type `/magi <question>` to invoke the full 3-agent debate (Empirical Skeptic / Tail-Risk Guardian / Convexity Seeker) for high-stakes decisions.
+- **English system prompts, bilingual triggers**: System-level prompts are in English (instruction precision baseline); trigger keywords match both Chinese and English (`决定|值得吗|选择|should I|worth it|risk`).
+- **Upstream-clean**: Kernel comes from `@oh-my-pi/pi-coding-agent`; this repo is just the content of `~/.omp/agent/`.
 
-## 安装（Windows）
+## Install (Windows / Linux / macOS)
 
-oh-my-pi **基于 bun 运行时**（不是 Node）。`npm i` 只装 wrapper，真启动时调用的是 `bun.exe`。
+oh-my-pi runs on **bun** (not Node).
 
-```powershell
-# 1. 安装 bun（一次性，全局）
-irm bun.sh/install.ps1 | iex
-# 装完后重开 PowerShell 让 PATH 生效，或：
-$env:Path += ";$env:USERPROFILE\.bun\bin"
+```bash
+# 1. Install bun (one-time)
+curl -fsSL https://bun.sh/install | bash      # Linux/macOS
+# Windows: irm bun.sh/install.ps1 | iex
 
-# 2. 通过 bun 安装 oh-my-pi
-bun add -g @oh-my-pi/pi-coding-agent
+# 2. Install oh-my-pi via bun
+bun install -g @oh-my-pi/pi-coding-agent
 
-# 3. 让 oh-my-pi 把本仓库当作 agent 配置根
-$env:PI_CODING_AGENT_DIR = "C:\Users\ming\taleb-pi"
-# 想永久生效：
-[Environment]::SetEnvironmentVariable("PI_CODING_AGENT_DIR", "C:\Users\ming\taleb-pi", "User")
-
-# 或不用环境变量，用软链（需要管理员 PowerShell）：
-# Remove-Item -Recurse -Force "$env:USERPROFILE\.omp\agent" -ErrorAction SilentlyContinue
-# New-Item -ItemType SymbolicLink -Path "$env:USERPROFILE\.omp\agent" -Target "C:\Users\ming\taleb-pi"
+# 3. Point oh-my-pi at this repo
+export PI_CODING_AGENT_DIR=/path/to/taleb-pi
+# Or symlink: ln -s /path/to/taleb-pi ~/.omp/agent
 ```
 
-填入 API key（仓库内 `.env` 已在 `.gitignore`，不会进 git）：
-```powershell
-Copy-Item .env.example .env
-# 编辑 .env 填入 DEEPSEEK_API_KEY 或 ANTHROPIC_API_KEY
+Set up API keys:
+
+```bash
+cp .env.example .env
+# Edit .env with DEEPSEEK_API_KEY or ANTHROPIC_API_KEY
 ```
 
-启动：
-```powershell
-omp
+Run:
+
+```bash
+omp                              # interactive
+omp -p "/magi should I take the new job offer?"   # one-shot tribunal
 ```
 
-## 目录结构
+## Repo Structure
 
 ```
 taleb-pi/
-├── SYSTEM.md            # 完全替换系统提示词 = 塔勒布世界观
-├── config.yml           # 模型、主题、扩展启用
-├── models.yml           # provider 路由（脆弱问题 → 深度模型）
-├── .env.example         # API keys 模板
-├── rules/               # alwaysApply 规则 + TTSR 触发规则
+├── SYSTEM.md            # Full system prompt replacement (Taleb worldview)
+├── config.yml           # Models, theme, skill/rule toggles
+├── .env.example         # API key template
+├── rules/               # Always-applied rules + TTSR triggers
 │   ├── via-negativa.md
 │   ├── antifragility.md
 │   ├── skin-in-the-game.md
-│   └── narrative-fallacy.md
-├── skills/              # 按需调用的思维技能
+│   ├── narrative-fallacy.md
+│   ├── lindy-effect.md
+│   ├── asymmetry-and-exposure.md
+│   ├── ergodicity.md            # ensemble vs time average
+│   ├── positive-convexity.md    # convex payoff foregrounded
+│   ├── cognitive-state-diagnosis.md  # GT0–GT5 framework
+│   └── magi-protocol.md         # ~50-token hint to recommend /magi at high-stakes moments
+├── skills/              # On-demand thinking skills
 │   ├── barbell-analysis/SKILL.md
 │   ├── premortem-taleb/SKILL.md
 │   ├── convexity-check/SKILL.md
-│   └── fragility-scan/SKILL.md
-├── tools/               # LLM 可调用的工具（自动发现）
-│   ├── fragility_scan/index.ts
-│   └── barbell_analysis/index.ts
-├── commands/            # 斜杠命令
-│   ├── skeptic.md
-│   ├── barbell.md
-│   ├── via-negativa.md
-│   └── antifragile.md
-├── agents/              # 子代理角色
-│   ├── skeptic.md
-│   ├── pre-mortem.md
-│   └── convexity-reviewer.md
-├── extensions/          # TS 扩展
-│   └── taleb-overlay/
-│       ├── index.ts             # 注册入口
-│       ├── intent-gate.ts       # 中英双语意图分类
-│       ├── narrative-fallacy.ts # 叙事谬误检测
-│       └── mode-marker.ts       # 每轮模式标记注入
-└── AGENTS.md            # 整体上下文
+│   ├── fragility-scan/SKILL.md
+│   ├── mental-models/SKILL.md       # 4 supplementary models
+│   ├── magi-tribunal/SKILL.md       # /magi opt-in flow
+│   └── incerto-search/SKILL.md      # BM25 query into the Incerto corpus
+├── agents/              # MAGI tribunal members
+│   ├── skeptic.md                   # MELCHIOR-1 — Empirical Skeptic
+│   ├── pre-mortem.md                # BALTHASAR-2 — Tail-Risk Guardian
+│   ├── antifragility-scout.md       # CASPER-3 — Convexity Seeker
+│   └── magi-synthesizer.md          # vote classifier (3-0 / 2-1 / 1-1-1)
+├── .omc/incerto/                    # BM25-indexed Incerto corpus (built post-deploy)
+│   ├── chunks/                       # ~500-token chapter-aware markdown
+│   ├── index.json                    # BM25 index
+│   ├── query-log.jsonl               # frequency tracker for crystallization
+│   └── scripts/search.ts             # query script invoked by incerto-search skill
+└── AGENTS.md            # Meta-layer context (when editing this repo itself)
 ```
 
-## 思维模式（4 种 + 自由模式）
+## Two Modes
 
-| 命令 | 模式 | 触发场景 |
+### Default Mode (every turn)
+
+The 8 `alwaysApply` rules inject Taleb framing into every system prompt: Via Negativa, antifragility, skin in the game, narrative-fallacy critique, Lindy effect, asymmetry/exposure, ergodicity, positive convexity. Plus the MAGI recommendation hint that nudges the agent to suggest `/magi` at high-stakes moments. Skills are available on demand (`/skill:<name>`).
+
+### MAGI Tribunal Mode (opt-in via `/magi`)
+
+For high-stakes irreversible decisions, type:
+
+```
+/magi <your question>
+```
+
+This dispatches the 3-agent tribunal — three Taleb attitudes that disagree by design:
+
+| Agent | Role | Optimization Target |
 |---|---|---|
-| `/skeptic` | 怀疑模式 | 检验主张、识别证据等级 |
-| `/barbell` | 杠铃模式 | 不确定决策、风险配置 |
-| `/via-negativa` | 反向法 | 删减、排除、识别脆弱源 |
-| `/antifragile` | 反脆弱扫描 | 系统设计、应对随机性 |
+| **MELCHIOR-1** | Empirical Skeptic | falsifiability, evidence quality, narrative fallacy |
+| **BALTHASAR-2** | Tail-Risk Guardian | survival, ruin avoidance, via negativa |
+| **CASPER-3** | Convexity Seeker | asymmetric payoff, optionality, antifragility |
 
-未指定模式时，IntentGate 会根据中英双语关键词自动分类。
+Each runs in parallel, then a rebuttal round, then a synthesizer presents the verdict (3-0 / 2-1 / 1-1-1). Designed for ~75% directional disagreement: when all three agree, the answer is high-signal; when they split, the disagreement structure IS the insight.
 
-## 跟随上游
+## Stay Upstream
 
-```powershell
-bun update -g @oh-my-pi/pi-coding-agent  # 拉最新内核（bun 是真正的运行时）
-git -C C:\Users\ming\taleb-pi pull       # 拉你自己的配置（如果托管了）
+```bash
+bun update -g @oh-my-pi/pi-coding-agent   # kernel update
+git -C /path/to/taleb-pi pull             # config update (if hosted)
 ```
 
-内核与配置完全解耦——升级 oh-my-pi 不会动你这个仓库的任何文件。
+Kernel and config are decoupled — kernel updates never touch this repo.

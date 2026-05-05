@@ -9,13 +9,11 @@ skills:
   enableSkillCommands: true
 rules: 
   enabled: true
-disabledProviders: 
+disabledProviders:
   - cursor
   - windsurf
   - cline
-disabledExtensions: 
-  - extension:taleb-overlay
-display: 
+display:
   showIntent: false
   showTokenStats: true
 hideThinkingBlock: true

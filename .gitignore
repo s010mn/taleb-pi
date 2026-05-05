@@ -15,6 +15,13 @@ node_modules/
 *.db-shm
 *.db-wal
 
+# Incerto 权威源（19MB 二进制；在 .omc/incerto/ 处理后不需要进 git）
+incerto-5-book-bundle.epub
+incerto-5-book-bundle.epub:Zone.Identifier
+
+# MAGI 运行时调试产物（本地审查用，不提交）
+.omc/qa/runs/
+
 # 编译产物
 dist/
 *.js.map
