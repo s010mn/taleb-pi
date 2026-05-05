@@ -19,6 +19,13 @@ node_modules/
 incerto-5-book-bundle.epub
 incerto-5-book-bundle.epub:Zone.Identifier
 
+# Incerto 运行时产物（脚本进 git，构建出来的索引/分块/日志不进——可以本地从 epub 重建）
+.omc/incerto/chunks/
+.omc/incerto/index.json
+.omc/incerto/query-log.jsonl
+.omc/incerto/bun.lock
+.omc/incerto/bun.lockb
+
 # MAGI 运行时调试产物（本地审查用，不提交）
 .omc/qa/runs/
 

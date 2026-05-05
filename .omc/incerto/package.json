@@ -1,0 +1,7 @@
+{
+  "name": "incerto-search",
+  "version": "0.1.0",
+  "description": "BM25 search index over the Incerto corpus for taleb-pi MAGI knowledge mandate",
+  "private": true,
+  "type": "module"
+}
