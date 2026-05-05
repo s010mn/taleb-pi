@@ -25,7 +25,7 @@ import { join, relative } from "node:path";
 // Paths
 
 const SCRIPT_DIR = new URL(".", import.meta.url).pathname;
-const INCERTO_DIR = join(SCRIPT_DIR, "..");           // .omc/incerto
+const INCERTO_DIR = join(SCRIPT_DIR, "..");           // scripts/incerto
 const CHUNKS_DIR = join(INCERTO_DIR, "chunks");
 const INDEX_PATH = join(INCERTO_DIR, "index.json");
 const REPO_ROOT = join(INCERTO_DIR, "..", "..");      // taleb-pi
@@ -123,7 +123,7 @@ function walkChunks(): { absPath: string; relPath: string }[] {
 interface DocEntry {
   /** Stable doc id = index in `docs` array */
   id: number;
-  /** Path relative to repo root, e.g. ".omc/incerto/chunks/black-swan/c001__01.md" */
+  /** Path relative to repo root, e.g. "scripts/incerto/chunks/black-swan/c001__01.md" */
   path: string;
   /** Frontmatter copied verbatim */
   meta: Frontmatter;

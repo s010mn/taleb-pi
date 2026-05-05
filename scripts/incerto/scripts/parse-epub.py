@@ -3,7 +3,7 @@ r"""
 Parse pre-extracted Incerto XHTML files into clean ~500-token markdown chunks.
 
 Reads:  /tmp/incerto-extracted/OEBPS/xhtml/*.xhtml
-Writes: <repo>/.omc/incerto/chunks/<book-slug>/c<chap>__<chunk-idx>.md
+Writes: <repo>/scripts/incerto/chunks/<book-slug>/c<chap>__<chunk-idx>.md
 
 Stdlib only — uses html.parser for tag stripping and re for chapter detection.
 
@@ -30,8 +30,9 @@ from pathlib import Path
 # Configuration
 
 REPO_ROOT = Path(__file__).resolve().parents[3]   # .../taleb-pi
+
+OUTPUT_DIR = REPO_ROOT / "scripts" / "incerto" / "chunks"
 SOURCE_DIR = Path("/tmp/incerto-extracted/OEBPS/xhtml")
-OUTPUT_DIR = REPO_ROOT / ".omc" / "incerto" / "chunks"
 
 # ISBN -> (title, slug) — verified from actual content of fm1/prl/c01 pages
 ISBN_TO_BOOK = {
