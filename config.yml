@@ -1,5 +1,5 @@
 modelRoles: 
-  default: kimi-code/kimi-for-coding:high
+  default: CCTQ/gpt-5.5:xhigh
   smol: deepseek/deepseek-v4-flash
   slow: deepseek/deepseek-v4-pro:xhigh
   task: deepseek/deepseek-v4-flash
@@ -12,14 +12,17 @@ skills:
   enableCodexUser: false
 rules: 
   enabled: true
-disabledProviders:
+disabledProviders: 
   - cursor
   - windsurf
   - cline
-display:
+  - claude
+  - claude-plugins
+  - codex
+display: 
   showIntent: false
   showTokenStats: true
-hideThinkingBlock: true
+hideThinkingBlock: false
 lastChangelogVersion: 14.6.6
 commands: 
   enableClaudeUser: false
@@ -28,3 +31,24 @@ commands:
   enableOpencodeProject: false
 mcp: 
   enableProjectConfig: false
+task: 
+  disabledAgents: 
+    - analyst
+    - architect
+    - code-reviewer
+    - code-simplifier
+    - critic
+    - debugger
+    - designer
+    - document-specialist
+    - executor
+    - explore
+    - git-master
+    - planner
+    - qa-tester
+    - scientist
+    - security-reviewer
+    - test-engineer
+    - tracer
+    - verifier
+    - writer
