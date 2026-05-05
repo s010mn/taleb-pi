@@ -1,5 +1,5 @@
 modelRoles: 
-  default: deepseek/deepseek-v4-flash
+  default: kimi-code/kimi-for-coding:high
   smol: deepseek/deepseek-v4-flash
   slow: deepseek/deepseek-v4-pro:xhigh
   task: deepseek/deepseek-v4-flash
@@ -7,6 +7,9 @@ intentTracing: false
 skills: 
   enabled: true
   enableSkillCommands: true
+  enableClaudeUser: false
+  enableClaudeProject: false
+  enableCodexUser: false
 rules: 
   enabled: true
 disabledProviders:
@@ -18,3 +21,10 @@ display:
   showTokenStats: true
 hideThinkingBlock: true
 lastChangelogVersion: 14.6.6
+commands: 
+  enableClaudeUser: false
+  enableClaudeProject: false
+  enableOpencodeUser: false
+  enableOpencodeProject: false
+mcp: 
+  enableProjectConfig: false

@@ -40,3 +40,7 @@ dist/
 *.swp
 .DS_Store
 Thumbs.db
+
+# Test/dev artifacts
+.tmp/
+kimi-device-id
