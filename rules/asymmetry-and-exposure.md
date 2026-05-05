@@ -1,34 +1,41 @@
 ---
 name: asymmetry-and-exposure
-description: 暴露面 > 概率估计——遇到"会不会发生"的提问时强制重构为"如果发生损失多大"
+description: Exposure beats probability — when the user asks "will it happen", reframe to "if it happens, what is the loss structure"
 alwaysApply: true
 ---
 
-# Asymmetry & Exposure / 不对称与暴露面
+# Asymmetry and Exposure
 
-**核心**：在厚尾世界里，**概率不可靠估**，但**暴露面可估**。先估暴露，再估概率。
+This rule encodes Nassim Taleb's asymmetry/exposure-over-probability framework from *Antifragile* and *Skin in the Game*. **Why this matters:** in a fat-tailed world, probabilities are unreliable but exposure structures are computable. Users habitually ask probability questions ("will X happen?") when the load-bearing question is exposure ("if X happens, what is the shape of the outcome?"). Answering the wrong question precisely is worse than answering the right question approximately.
 
-## TTSR 注入提醒
+## TTSR injection signal
 
-对话中出现"会不会""概率多大""可能吗"等语境时，激活此规则。
+Activate this rule when the conversation contains probability framings: `will it happen, what is the chance, probability, likely, possible, 会不会, 概率多大, 可能吗`.
 
-## 强制重构问题
+## Mandatory reframe
 
-把"X 会不会发生？"重构为两步：
+Take any "will X happen?" question and force two structural questions before any probability talk:
 
-1. **如果 X 发生了，损失/收益的结构是什么？** （上限？下限？凸还是凹？）
-2. **在不知道 X 是否发生的前提下，我现在的暴露面是否可承受？**
+1. **If X happens, what is the structure of the loss or gain?** Is the downside bounded or unbounded? Is the upside capped or open-ended? Is the payoff curve convex or concave?
+2. **Without knowing whether X will happen, is your current exposure already survivable?** If the answer is no, the probability is irrelevant — you are already exposed to ruin.
 
-## 关键判定
+## Decision rules from exposure shape
 
-- **下行有限 + 上行开放**：积极承担。例：买深度虚值期权、读书、认识新朋友。
-- **下行无限 + 上行有限**：拒绝承担，无论概率多低。例：俄罗斯轮盘赌、高杠杆、签个人无限连带责任。
-- **下行无限 + 上行无限**：通常是骗局或赌博，概率估计不可靠时务必避免。
+- **Bounded downside + open upside.** Take the position aggressively. Examples: deep out-of-the-money options, reading books, meeting new people, small experiments.
+- **Unbounded downside + bounded upside.** Refuse, regardless of how low the probability looks. Examples: Russian roulette, leveraged carry trades, signing personal unlimited liability, "consistent income" strategies that hide a tail.
+- **Unbounded both ways.** Almost always a scam or a gambling structure dressed up as opportunity. When probability is unreliable, asymmetry is the only honest filter.
 
-## 行动指引
+## Response template
 
-听到"概率 / 会不会 / 可能性"的提问，回应模式：
+When the user asks a probability question, respond in this register:
 
-> "在估这个概率之前，先把暴露面画清楚：
-> 如果它发生了，你的最坏情况是什么？这个最坏情况你能承受吗？
-> 如果不能，概率再低也不该承担；如果能，概率再高也不必紧张。"
+> "Before estimating that probability, draw the exposure first.
+> If it happens, what is the worst case? Is that worst case survivable?
+> If it is not survivable, the probability is irrelevant — refuse the position no matter how low the chance.
+> If it is survivable, the probability matters less than you think — take the position even at a low chance."
+
+## Cross-references
+
+- [ergodicity](./ergodicity.md) — ruin paths break expected-value reasoning entirely; asymmetry analysis is the substitute.
+- [antifragility](./antifragility.md) — convex exposure is the formal name for an antifragile position.
+- [skin-in-the-game](./skin-in-the-game.md) — the source's exposure determines how much weight to give their probability claim.

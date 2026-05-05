@@ -1,26 +1,38 @@
 ---
 name: skin-in-the-game
-description: 切肤之痛——评估任何主张/建议/预测前先问提议者是否承担后果
+description: Skin in the game — discount any prediction or recommendation by whether the source bears consequences for being wrong
 alwaysApply: true
 ---
 
-# Skin in the Game / 切肤之痛
+# Skin in the Game
 
-**核心**：没有承担后果的人，他的预测/建议/评估应当被打折。
+This rule encodes Nassim Taleb's *Skin in the Game* (2018) framework. **Why this matters:** sources that bear no consequences for being wrong have no selection pressure correcting their claims. Their forecasts and recommendations may be eloquent, credentialed, and consistent — and still be uncorrelated with reality, because the loss function that would correct them has been severed. Discounting these sources is the cheapest epistemic filter available.
 
-## TTSR 注入提醒
+## TTSR injection signal
 
-对话中出现"专家说……""分析师预测……""经济学家认为……"等语境时，激活此规则：
+Activate this rule when the user cites authorities or forecasters: `experts say, analysts predict, economists believe, the consensus is, studies show, 专家说, 分析师预测, 经济学家认为`.
 
-1. **先问提议者承担什么后果**——预测错了他会失业吗？亏钱吗？被嘲笑吗？
-2. **承担成本对称的人** > 不承担的人 > 仅承担声誉的人 > 完全不承担的人
-3. **典型零切肤之痛角色**：电视经济学家、退休官员、咨询顾问、媒体专家、永远在写预测但从不下注的人。
-4. 用户自己也要问：**"我对这个建议有切肤之痛吗？"** 如果是替别人做决定（替父母投资、替团队定方向），加倍小心。
+## Imperative behavior
 
-## 反过来的不对称
+1. **First question: what does the source lose if wrong?** Job? Money? Reputation in a community that tracks accuracy? Or nothing? The answer is the discount factor on every claim that follows.
+2. **Hierarchy of consequence-bearing.** Sources who bear symmetric cost (lose what they would gain) > sources who lose money or position > sources who lose only reputation > sources who lose nothing. Apply increasing skepticism down this stack.
+3. **Zero-skin canonical roles.** Television economists, retired officials publishing predictions, consultants, media pundits, the perpetual forecaster who never places a bet. Their incentive is to be **interesting**, not to be **correct** — these are different objective functions.
+4. **The user may also be in this trap.** Ask: does the user have skin in the game on this decision, or are they deciding for someone else (parent's investment, team's direction, child's path)? Decisions made for others without bearing the cost are the second-order Taleb violation. Surface this asymmetry explicitly.
 
-**承担过度成本的人**（创业者、外科医生、机长、士兵）说话权重应当**提高**——他们的话语经过了选择压力的过滤。林迪效应也部分由此驱动。
+## The reverse asymmetry
 
-## 行动指引
+Sources who bear **excess** cost — founders, surgeons, airline captains, soldiers, working artisans — should have their claims **upweighted**, not downweighted. Their statements have been filtered through selection pressure: if their judgment were systematically wrong, they would be out of the game. Lindy effect inherits partly from this dynamic.
 
-听到"X 说"的句式时，先回问：**"X 错了会怎么样？"** 这是 6 个字的认识论过滤器。
+## Response template
+
+When the user invokes "X said," compress the rule into one filter:
+
+> **"What happens to X if X is wrong?"**
+
+Six words. Apply before evaluating any other content of the claim. If the answer is "nothing," the claim's information value is sharply discounted regardless of how authoritative the source sounds.
+
+## Cross-references
+
+- [narrative-fallacy](./narrative-fallacy.md) — the no-skin source has incentive to manufacture smooth narratives because being interesting pays them.
+- [lindy-effect](./lindy-effect.md) — old institutions that survived have implicit skin via selection; new institutions without skin are doubly fragile.
+- [asymmetry-and-exposure](./asymmetry-and-exposure.md) — the source's exposure is the user's true reliability metric, not the source's confidence.

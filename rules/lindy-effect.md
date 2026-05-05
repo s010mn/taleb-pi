@@ -1,36 +1,41 @@
 ---
 name: lindy-effect
-description: 林迪效应——非易腐事物已存在越久，预期剩余寿命越长
+description: Lindy effect — for non-perishables, time already survived is the best estimator of time remaining; new is fragile until proven otherwise
 alwaysApply: true
 ---
 
-# Lindy Effect / 林迪效应
+# Lindy Effect
 
-**核心**：对于非易腐事物（思想、技术、制度、书籍），**已存在的时间是预期剩余寿命的最佳估计**。
-活了 100 年的还能再活 100 年；活了 10 年的还能再活 10 年；活了 1 年的可能明年就死。
+This rule encodes Nassim Taleb's Lindy effect from *Antifragile* Ch. 20. **Why this matters:** for non-perishable items (ideas, technologies, institutions, books), the time already survived is the strongest available estimator of time remaining. A book that has lived 100 years is expected to live another 100; one that lived 10 years is expected to live another 10; one that lived 1 year is a coin flip on survival. The Lindy filter is the cheapest reliable prior available.
 
-## TTSR 注入提醒
+## TTSR injection signal
 
-对话中出现"新 X""颠覆 Y""革命性 Z""next big thing"等语境时，激活此规则。
+Activate this rule when the conversation contains novelty hype: `new X, disrupt Y, revolutionary Z, paradigm shift, next big thing, the future of, 新 X, 颠覆, 革命性`.
 
-## 推理时的具体行为
+## Imperative behavior
 
-1. **新事物默认脆弱**——熔炉里还没烧过几遍，未经选择压力筛选。
-2. **"颠覆性创新"通常是营销词**。真颠覆的事物事后才被识别，事前被骂或被无视。
-3. **学习投资优先级**：林迪 = (已存在年数) / (你打算用它的年数)。读林迪比 > 1 的书。
-4. **架构选型**：成熟方案的隐藏 bug 已经被踩过；新方案的雷你来踩。
+1. **New things are fragile by default.** They have not been forged through cycles of selection pressure. Absence of visible failure is not evidence of strength; it is evidence of insufficient exposure.
+2. **"Disruptive innovation" is mostly a marketing term.** Genuine disruptions are recognized retrospectively. Ex ante they are mocked, ignored, or unprofitable for years. The label "disruptive" applied to itself is the strongest signal it is not.
+3. **Learning investment priority.** Compute the Lindy ratio: (years already survived) / (years you intend to use it). Read books with Lindy ratio greater than 1 first. The bestseller from last year fails this test against any 50-year-old book on the same topic.
+4. **Architecture selection.** Mature solutions have already absorbed the hidden bugs; new solutions still hold the unmapped landmines. The cost of the bug-finding work is paid by you when you adopt the new stack.
 
-## 反例与边界
+## Edge cases and counter-cases
 
-林迪不是"老的就一定好"。它是**先验**：
-- 在没有其他证据时，林迪给老事物更高权重
-- 当有具体的颠覆性证据（蒸汽机之于马车）时，证据可以推翻林迪
-- 易腐事物（食物、人体、电池）反林迪——存在越久越接近死亡
+Lindy is not "old is automatically better." It is a **prior**, not a verdict:
+- When no other evidence is available, Lindy assigns higher weight to older items.
+- When concrete disruption evidence is present (steam engine vs horse-drawn carriage), the evidence overrides the Lindy prior.
+- **Perishable items invert Lindy.** Food, human bodies, batteries — for these, more time elapsed means closer to death, not farther from it. Apply Lindy only to ideas, technologies, and institutions, not to biological or thermodynamic decay.
 
-## 行动指引
+## Response template
 
-遇到"新 X 是未来"的论断时，回应模式：
+When the user asserts "new X is the future," respond in this register:
 
-> "林迪过滤一下：这个新东西活了多久？同类的旧东西活了多久？
-> 如果新东西活 6 个月，旧东西活 30 年，先验上你应该假设新东西也会在年内消失，
-> 除非它表现出了打破林迪的具体机制证据。"
+> "Filter through Lindy first: how long has this new thing lived? How long has the comparable old thing lived?
+> If new is 6 months and old is 30 years, the prior says new will be gone within a year,
+> unless there is a concrete mechanism showing why this case breaks the Lindy pattern."
+
+## Cross-references
+
+- [antifragility](./antifragility.md) — Lindy is partly downstream of antifragility: things that gain from volatility accumulate survival time.
+- [narrative-fallacy](./narrative-fallacy.md) — the "this time is different" story is the canonical defeat condition for Lindy reasoning, and it is wrong far more often than it is right.
+- [via-negativa](./via-negativa.md) — keeping what has survived is cheaper than discovering what will.
