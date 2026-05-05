@@ -1,0 +1,334 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777910987097,
+  "projectRoot": "/home/ming/taleb-pi",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "agents": {
+      "path": "agents",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1777910987089,
+      "keyFiles": [
+        "convexity-reviewer.md",
+        "pre-mortem.md",
+        "skeptic.md"
+      ]
+    },
+    "commands": {
+      "path": "commands",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1777910987090,
+      "keyFiles": [
+        "antifragile.md",
+        "barbell.md",
+        "exit-mode.md",
+        "skeptic.md",
+        "via-negativa.md"
+      ]
+    },
+    "extensions": {
+      "path": "extensions",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1777910987090,
+      "keyFiles": []
+    },
+    "rules": {
+      "path": "rules",
+      "purpose": null,
+      "fileCount": 6,
+      "lastAccessed": 1777910987090,
+      "keyFiles": [
+        "antifragility.md",
+        "asymmetry-and-exposure.md",
+        "lindy-effect.md",
+        "narrative-fallacy.md",
+        "skin-in-the-game.md"
+      ]
+    },
+    "skills": {
+      "path": "skills",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1777910987091,
+      "keyFiles": []
+    },
+    "tools": {
+      "path": "tools",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1777910987091,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "SYSTEM.md",
+      "accessCount": 19,
+      "lastAccessed": 1777955938850,
+      "type": "file"
+    },
+    {
+      "path": "agents/skeptic.md",
+      "accessCount": 16,
+      "lastAccessed": 1777955738874,
+      "type": "file"
+    },
+    {
+      "path": "config.yml",
+      "accessCount": 15,
+      "lastAccessed": 1777961325159,
+      "type": "file"
+    },
+    {
+      "path": "agents/pre-mortem.md",
+      "accessCount": 13,
+      "lastAccessed": 1777954933865,
+      "type": "file"
+    },
+    {
+      "path": "skills/magi-tribunal/SKILL.md",
+      "accessCount": 12,
+      "lastAccessed": 1777955069302,
+      "type": "file"
+    },
+    {
+      "path": "agents/antifragility-scout.md",
+      "accessCount": 12,
+      "lastAccessed": 1777955350484,
+      "type": "file"
+    },
+    {
+      "path": "agents/magi-synthesizer.md",
+      "accessCount": 11,
+      "lastAccessed": 1777955028994,
+      "type": "file"
+    },
+    {
+      "path": "AGENTS.md",
+      "accessCount": 9,
+      "lastAccessed": 1777954281167,
+      "type": "file"
+    },
+    {
+      "path": "rules/narrative-fallacy.md",
+      "accessCount": 8,
+      "lastAccessed": 1777955889745,
+      "type": "file"
+    },
+    {
+      "path": "rules/via-negativa.md",
+      "accessCount": 8,
+      "lastAccessed": 1777955890757,
+      "type": "file"
+    },
+    {
+      "path": "README.md",
+      "accessCount": 7,
+      "lastAccessed": 1777954352424,
+      "type": "file"
+    },
+    {
+      "path": "agents/convexity-reviewer.md",
+      "accessCount": 6,
+      "lastAccessed": 1777922412904,
+      "type": "file"
+    },
+    {
+      "path": "commands/skeptic.md",
+      "accessCount": 6,
+      "lastAccessed": 1777945056374,
+      "type": "file"
+    },
+    {
+      "path": "rules/antifragility.md",
+      "accessCount": 6,
+      "lastAccessed": 1777955888359,
+      "type": "file"
+    },
+    {
+      "path": "rules/asymmetry-and-exposure.md",
+      "accessCount": 6,
+      "lastAccessed": 1777955888793,
+      "type": "file"
+    },
+    {
+      "path": "rules/skin-in-the-game.md",
+      "accessCount": 6,
+      "lastAccessed": 1777955890317,
+      "type": "file"
+    },
+    {
+      "path": "rules/lindy-effect.md",
+      "accessCount": 5,
+      "lastAccessed": 1777955889226,
+      "type": "file"
+    },
+    {
+      "path": "2026-05-04-taleb-pi-oh-my-pi-vs-oh-my-openagent-analysis.md",
+      "accessCount": 3,
+      "lastAccessed": 1777914664246,
+      "type": "file"
+    },
+    {
+      "path": "extensions/taleb-overlay/index.ts",
+      "accessCount": 3,
+      "lastAccessed": 1777917310189,
+      "type": "file"
+    },
+    {
+      "path": "extensions/taleb-overlay/mode-marker.ts",
+      "accessCount": 3,
+      "lastAccessed": 1777917310239,
+      "type": "file"
+    },
+    {
+      "path": "rules/magi-protocol.md",
+      "accessCount": 3,
+      "lastAccessed": 1777955731790,
+      "type": "file"
+    },
+    {
+      "path": "skills/incerto-search/SKILL.md",
+      "accessCount": 3,
+      "lastAccessed": 1777956527246,
+      "type": "file"
+    },
+    {
+      "path": "commands/exit-mode.md",
+      "accessCount": 2,
+      "lastAccessed": 1777912966086,
+      "type": "file"
+    },
+    {
+      "path": "commands/barbell.md",
+      "accessCount": 2,
+      "lastAccessed": 1777912998913,
+      "type": "file"
+    },
+    {
+      "path": "commands/antifragile.md",
+      "accessCount": 2,
+      "lastAccessed": 1777912999068,
+      "type": "file"
+    },
+    {
+      "path": "commands/via-negativa.md",
+      "accessCount": 2,
+      "lastAccessed": 1777912999129,
+      "type": "file"
+    },
+    {
+      "path": "extensions/taleb-overlay/intent-gate.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777917310276,
+      "type": "file"
+    },
+    {
+      "path": "extensions/taleb-overlay/narrative-fallacy.ts",
+      "accessCount": 2,
+      "lastAccessed": 1777917310299,
+      "type": "file"
+    },
+    {
+      "path": "rules/cognitive-state-diagnosis.md",
+      "accessCount": 2,
+      "lastAccessed": 1777955731456,
+      "type": "file"
+    },
+    {
+      "path": "rules/positive-convexity.md",
+      "accessCount": 2,
+      "lastAccessed": 1777955732021,
+      "type": "file"
+    },
+    {
+      "path": "rules/ergodicity.md",
+      "accessCount": 2,
+      "lastAccessed": 1777955732131,
+      "type": "file"
+    },
+    {
+      "path": "skills/fragility-scan/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1777911059720,
+      "type": "file"
+    },
+    {
+      "path": "tools/fragility_scan/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777911061543,
+      "type": "file"
+    },
+    {
+      "path": "skills/barbell-analysis/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1777911061742,
+      "type": "file"
+    },
+    {
+      "path": "tools/premortem_taleb/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777911062064,
+      "type": "file"
+    },
+    {
+      "path": "skills/premortem-taleb/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1777911062213,
+      "type": "file"
+    },
+    {
+      "path": "tools/convexity_check/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777911062337,
+      "type": "file"
+    },
+    {
+      "path": "tools/barbell_analysis/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1777911062391,
+      "type": "file"
+    },
+    {
+      "path": "skills/convexity-check/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1777911062417,
+      "type": "file"
+    },
+    {
+      "path": "skills/mental-models/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1777955457662,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

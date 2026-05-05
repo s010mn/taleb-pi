@@ -1,0 +1,695 @@
+# Critic Evaluation (Iteration 2)
+
+**Reviewer:** Critic (oh-my-claudecode:critic)
+**Plan:** `.omc/plans/taleb-pi-execution-plan.md` (787 lines, +268 from iter 1)
+**Open Questions Tracker:** `.omc/plans/open-questions.md` (NEW, 27 lines)
+**Architect Review (iter 2):** APPROVE-WITH-RESERVATIONS, 3 new issues (NI-1, NI-2, NI-3)
+**Mode:** RALPLAN-DR DELIBERATE, iteration 2 of max 5
+**Date:** 2026-05-05
+**Investigation Mode:** THOROUGH (no escalation triggered — zero critical findings, all iter-1 concerns resolved)
+
+---
+
+## Verdict
+
+**APPROVE-WITH-RESERVATIONS** (per ralplan vocabulary: this is functionally APPROVE with 3 documented P0 plan edits the executor applies before P2 ships).
+
+The plan's iteration-2 revision is genuinely good. All 17 of my iteration-1 edits are addressed (12 fully, 5 substantively-with-acknowledged-tradeoffs). The 12 Architect iter-1 edits are addressed (10 fully, 2 with caveats that the Architect themselves surfaced as new issues). The new `open-questions.md` tracker honestly catalogs deferred items. The ADR is now substantively filled and honest about the BM25-vs-research tension.
+
+The Architect's 3 new issues are real but surgical. NI-1 (smoke-test sequencing contradiction) is a mechanical 2-line fix. NI-2 (timestamp test false-pass) is a measurement-spec swap. NI-3 (cross-file label consistency) is a 3-line grep addition. Total: ~30 lines of plan edits, none touching the architectural spine.
+
+**The iteration economics flip the verdict.** Demanding iteration 3 for ~30 lines of polish is iteration churn — the cost of one more P→A→C cycle exceeds the severity of the issues. The right move is to APPROVE with the 3 P0 edits documented as `open-questions.md` items the executor applies before P2 ships, exactly as the Architect's APPROVE-WITH-RESERVATIONS implies.
+
+---
+
+## Hard Gates (Iteration 2)
+
+| # | Gate | Status (iter 1 → iter 2) | Notes |
+|---|------|---------------------------|-------|
+| 1 | Principle-Option Consistency | PASS → PASS | All 7 chosen options trace to drivers. CF1 (V1 in architect) was the lone tension; resolved by moving executable to `.omc/incerto/scripts/`. ADR Why-Chosen at line 729 traces B/B/A/B/C/A/A back to D1/D2/D3 explicitly. |
+| 2 | Fair Alternatives | PASS (with reservation) → **PASS** | O3 now lists option E (LanceDB + Transformers.js) at line 75 with full pros/cons. Rationale at lines 77-84 traces to drivers; ADR Consequences > Negative line 742 names the spread (5.75 vs not-in-top-7) and migration trigger. The omission that caused the iter-1 reservation is fixed. |
+| 3 | Risk Mitigation Clarity | PARTIAL PASS → **PASS** | R11 (subagent skills, HIGH), R12 (sequential collapse, HIGH), R13 (DeepSeek-v4 Chinese anchoring, LOW) added. R8 marked RESOLVED. Each new risk ties to specific plan elements (smoke tests, timestamp criterion, bail-out). |
+| 4 | Testable Acceptance Criteria | PASS → PASS | Each phase has concrete bash command sequences (lines 238-253, 393-417, 454-472, 514-543, 640-674). Verified: `omp --version`, `omp --list-rules`, `omp --dispatch task`, grep audits, recall@5 check, all are mechanically executable. **Caveat**: `omp --dispatch task` and `omp --list-rules` are assumed CLI verbs — not verified against the binary. Open question Q-iter2-1 below. |
+| 5 | Concrete Verification Steps | PASS → PASS | Per-phase pass/fail conditions explicit. P2 bail-out protocol (lines 384-388) has 3 states. P3 grep audit specifies exact pattern. P5 recall@5 ≥3/5 threshold. |
+| 6 | Pre-Mortem Quality | PARTIAL PASS → **PASS** | PM4 (lines 162-169) covers the silent sequential collapse — concrete failure mode, traced root cause, 4 mitigations (acceptance criterion, R12, smoke-test logging, monthly re-check cadence). All 4 PMs concrete, not theatrical. |
+| 7 | Expanded Test Plan (4 levels) | PASS → PASS | Unit (per-agent structure check), Integration (rule + skill + agent triple, dispatch-each-MAGI test), E2E (8-question battery + factual gate test + parallelism timestamp check), Observability (battery-only persisted transcripts, query-log.jsonl, retention policy). All 4 levels addressed with concrete artifacts. |
+
+**Hard gate net (iter 2):** 7/7 PASS. Up from 5 PASS + 2 PARTIAL in iter 1.
+
+---
+
+## Soft Gates (Iteration 2)
+
+| # | Gate | Status (iter 1 → iter 2) | Notes |
+|---|------|---------------------------|-------|
+| 8 | Execution Specificity | PASS → PASS | File paths, line numbers, frontmatter snippets, npm packages, bash command sequences all present. The plan now reads more like a runbook than the iter-1 strategy document. |
+| 9 | Architect Concern Resolution | FAIL → **PASS-WITH-RESERVATIONS** | All 12 iter-1 architect edits are addressed (10 fully, 2 with new-issue caveats). Architect's iter-2 review issued APPROVE-WITH-RESERVATIONS. Three new architectural issues (NI-1, NI-2, NI-3) introduced — see triage below. None touch the spine. |
+| 10 | Internal Consistency | PARTIAL PASS → **PASS-WITH-RESERVATIONS** | CF1 contradiction (P1 deletes tools/, P5 recreates) is fully resolved (executable moved, P1 deletion final at line 112). **However**, NI-1 introduces a NEW internal contradiction (smoke-test sequencing — see triage below). This is iter-2's regression. |
+| 11 | Spec Fidelity | FAIL → **PASS** | Non-Goal "deleting tools/ entirely" honored literally (line 112: "tools/ directory is NOT recreated"; File Manifest line 771: "tools/ STAYS deleted"). Spec self-contradiction on narrative-fallacy-guard TTSR explicitly adjudicated at lines 24-36 (plan honors line 35; logged as ADR Negative consequence line 743). |
+| 12 | ADR Stub Completeness | PASS → PASS | ADR (lines 696-763) is substantively filled. Status, Decision, Drivers, Alternatives Considered (all 7 options), Why Chosen (traces B/B/A/B/C/A/A to D1/D2/D3), Consequences (Positive 5 / Negative 6 / Neutral 3), Follow-ups (8 specific items). Honest about BM25-vs-research disagreement (line 742), MAGI cost (line 744), code-subordinate-to-thinking bend (line 741). Status will flip from PROPOSED to ACCEPTED post-Critic. |
+
+**Soft gate net (iter 2):** 5/5 PASS (3 fully, 2 PASS-WITH-RESERVATIONS due to NI-1). Up from 2 PASS + 1 PARTIAL + 2 FAIL in iter 1.
+
+---
+
+## Iteration 1 Concerns Triaged (Resolution Verification)
+
+I read my own iter-1 evaluation to verify each of my 17 specific edits and 5 critic-original concerns were addressed.
+
+### Critical Findings (1)
+
+| # | Iter-1 Finding | Iter-2 Resolution Status |
+|---|---|---|
+| CF1 | Spec Non-Goal violation: tools/ recreation in P5.3 | **RESOLVED**. Lines 99-112 (O5) rewrite chose option C; executable at `.omc/incerto/scripts/search.ts`; line 112 explicit "tools/ NOT recreated"; File Manifest line 771 confirms; R8 marked RESOLVED at line 691; verification step at line 642 (`test ! -e tools/ && echo OK`). The footnote rationalization is gone. |
+
+### Major Findings (5)
+
+| # | Iter-1 Finding | Iter-2 Resolution Status |
+|---|---|---|
+| MF1 | Parallelism semantics unverified, no observability hook | **RESOLVED-WITH-CAVEAT**. P2 acceptance criterion 5 (line 379) adds dispatch-timestamp check; PM4 (lines 162-169) covers silent sequential collapse; R12 (line 684) tracked. **Caveat**: NI-2 (Architect iter-2) identifies that the timestamp test admits a false-pass when each child's first action is fast. Test is structurally weak. Promoted to MUST FIX P0 in this iteration's recommendations below. |
+| MF2 | BM25 vs vector retrieval contradiction silently omitted | **RESOLVED**. Option E added to O3 at line 75 with full pros/cons. Rationale traces to D2 + D3 (lines 77-84). ADR Consequences > Negative line 742 documents the contradiction with research, names the spread (5.75 vs not-in-top-7), states user's explicit Round-16 override, names the migration trigger. Honest. |
+| MF3 | Subagent skill access semantics unverified | **RESOLVED-WITH-CAVEAT**. P5.4-pre (lines 595-606) specifies the smoke-test procedure; 3 outcome paths (Pass A / Pass B / Fail); Pass B's Bash fallback is concrete (line 604 specifies the command pattern); Fail's pivot is documented. R11 (line 683) tracked. **Caveat**: NI-1 (Architect iter-2) identifies that the smoke test cannot run at P2 acceptance time as line 382 claims, because P5.3 (which the smoke-test setup at line 600 requires) has not run. Promoted to MUST FIX P0 below. |
+| MF4 | Spec self-contradiction on narrative-fallacy-guard TTSR not adjudicated | **RESOLVED**. Plan §1 lines 24-36 explicitly adjudicates: spec line 35 (no TTSR) wins over spec line 419 (Round 14 transcript), reasoning is "Round-16-overrode-Round-14"; existing `rules/narrative-fallacy.md` remains as alwaysApply (not TTSR); MELCHIOR-1 handles narrative fallacy contextually. P2.6 line 363 reinforces. ADR Negative line 743 documents. |
+| MF5 | Synthesizer S2A as relabel rather than executable stage | **RESOLVED**. P2.4 lines 320-334 contains a literal extraction table (`\| Agent \| optimization_dimension \| substantive_verdict \| condition_content \|`) the synthesizer MUST fill before classifying. Plus 2-stage classification rules. Plus partial-output protocol (line 341). Executable, not decorative. |
+
+### Critic-Original Edits (3)
+
+| # | Iter-1 Edit | Iter-2 Resolution Status |
+|---|---|---|
+| 13 | Adjudicate spec self-contradiction on narrative-fallacy-guard TTSR | **RESOLVED** (same as MF4) — lines 24-36 + ADR line 743. |
+| 14 | Address vector-retrieval research contradiction | **RESOLVED** (same as MF2) — O3 option E + ADR line 742 + migration trigger documented. |
+| 15 | Add PM4 covering silent sequential collapse | **RESOLVED** — PM4 at lines 162-169 with concrete failure mode + 4 mitigations. |
+
+### Specific Plan Edits (17)
+
+Cross-checked each of my 17 numbered edits from iter-1 against the revised plan:
+
+| # | Iter-1 Edit | Iter-2 Status |
+|---|---|---|
+| 1 | Move executable out of `tools/` | **DONE** (line 109, line 557, line 583) |
+| 2 | Add parallelism timestamp criterion | **DONE** (line 379) — but admits false-pass (NI-2) |
+| 3 | Replace S2A prose with extraction template | **DONE** (lines 320-334) |
+| 4 | Bound P2 verification loop (max 2 iterations + bail-out) | **DONE** (lines 384-388) |
+| 5 | Add 3rd gate state (MELCHIOR-only for clarification) | **DONE** (lines 359-362, State A/B/C) |
+| 6 | Smoke-test subagent skill access before P5.4 | **DONE** (lines 595-606) — but sequencing contradiction (NI-1) |
+| 7 | Add R11 (subagent skill access) | **DONE** (line 683) |
+| 8 | Add R12 (sequential collapse) | **DONE** (line 684) |
+| 9 | Token budget for `magi-protocol.md` (≤1500 tokens) | **DONE** (line 358) + verification at line 398 |
+| 10 | Adjudicate spec contradiction on narrative-fallacy-guard | **DONE** (lines 24-36, line 363, line 743) |
+| 11 | Add option E (LanceDB) to O3 | **DONE** (line 75) |
+| 12 | Add PM4 (silent sequential collapse) | **DONE** (lines 162-169) |
+| 13 | ADR Consequences > Negative on code-subordinate-to-thinking bend | **DONE** (line 741) |
+| 14 | Specify retention on `.omc/qa/runs/` (last 10, prune older) | **DONE** (line 196, line 203) |
+| 15 | Switch query-log to .jsonl (mf3) | **DONE** (line 109, line 201, line 588) |
+| 16 | Pandoc feature detection in ingest.ts | **DONE** (line 559) |
+| 17 | `task` payload mechanism (verbatim user question) | **DONE** (line 366) |
+
+**Critic iter-1 net: 17/17 specific edits addressed. Zero rejected.**
+
+---
+
+## Architect's 3 New Issues (NI-1, NI-2, NI-3) Triage
+
+I independently verified each of the Architect's iter-2 findings against the plan source.
+
+### NI-1 — Smoke-test sequencing self-contradiction
+
+**Architect's claim:** Plan line 382 says skill-access smoke test runs at P2 acceptance (before P3); plan line 600 says P5.3 must be complete (P5.3 is in Phase 5). Mutually exclusive.
+
+**My verification:**
+- Line 382: `Subagent skill access smoke test (NEW — see P5.4 prerequisite). This MUST pass before P5.4 begins, but the smoke test itself runs at P2 acceptance time (before P3) so we discover the access constraint as early as possible.`
+- Line 600: `Setup: P5.3 must be complete (script + skill exist). Spin up a minimal test subagent at .omc/qa/test-subagent.md...`
+- The line 379 escape valve (`stub search.ts that does nothing but log timestamps`) addresses the *parallelism timestamp* test, not the *skill-access* probe. The probe at line 600 explicitly invokes `skill://incerto-search` which requires `skills/incerto-search/SKILL.md` to exist — created in P5.3.
+
+**Confirmed.** The contradiction is real and mechanical. The executor will hit this at P2 acceptance and stop.
+
+**Triage:** **MUST FIX (P0 plan edit, applied before P2 ships)**
+
+**Concrete edit:** Apply Architect's preferred option (a) — create a minimal stub `skills/incerto-search/SKILL.md` at P2 acceptance time (5 lines: name, description, body returning literal `STUB_OK`). The probe at P2 acceptance verifies whether subagents can read skill content at all. P5.3 then fleshes out the skill body. This preserves the "discover constraints early" intent without breaking the dependency.
+
+**Plan edit (replace line 382 + line 600 setup):**
+
+Line 382 becomes:
+```
+[ ] Subagent skill access smoke test (NEW — see P5.4-pre prerequisite for full procedure). At P2 acceptance time, run a minimal-stub variant: create `skills/incerto-search/SKILL.md` with a 5-line stub body ("name: incerto-search / description: stub / body: returns the literal string STUB_OK"). Spin up the test subagent and verify it can resolve `skill://incerto-search` and read the stub content. This MUST pass before P3. The full skill-access probe (with real BM25 search) re-runs at P5.4-pre prerequisite once P5.3 ships the real script.
+```
+
+Line 600 becomes:
+```
+1. **Setup**: At P2 acceptance time, only the 5-line stub `skills/incerto-search/SKILL.md` exists; the probe verifies skill-resolution mechanics. At P5.4-pre prerequisite (after P5.3 ships), the real skill body is in place; the probe verifies the full BM25 search round-trip. Spin up a minimal test subagent at `.omc/qa/test-subagent.md` with frontmatter `name: skill-access-probe`, `description: "probe: invokes incerto-search and reports outcome"`, body: "When dispatched, your task is to invoke `skill://incerto-search`. If the skill is available, follow its instructions and return either the literal string `STUB_OK` (if the stub body is in place — P2 acceptance variant) or the top BM25 search result with citation (P5.4 variant). If the skill is unavailable, return `SKILL_INACCESSIBLE` and your full system prompt's tool/skill list."
+```
+
+**Severity:** HIGH (would block executor at P2 acceptance). Confidence: HIGH.
+
+**Realist Check:** Worst case is the executor stops at P2 acceptance, reads the contradiction, asks for clarification, and either chooses the stub path on their own or pings the planner. Cost: 1 round-trip, ~30 minutes. Mitigated by: trivial fix (create 5-line stub skill at P2 acceptance). **Severity stays MUST FIX** because internal-consistency contradictions are exactly what the deliberate-mode review must catch — letting one through past the Critic on the second iteration is a process failure even if the practical cost is low.
+
+### NI-2 — Parallelism timestamp test admits false-pass
+
+**Architect's claim:** Line 379's "all 3 timestamps within 2 seconds of each other" measures dispatch arrival time, not reasoning concurrency. If each child's first action is <700ms, sequential dispatch can produce a 1.8s spread that passes.
+
+**My verification:**
+- Line 167 (PM4 mitigations): `Source of truth is query-log.jsonl (each MAGI's first incerto-search call timestamps its dispatch); battery runner aggregates per-run.` — confirms it is a first-action arrival check, not task-end concurrency.
+- Line 379: `Pass: all 3 timestamps within 2 seconds of each other.` — 2s spread on first arrivals.
+- Architect's math: M(t=0)→0.6s log→B starts→1.2s log→C starts→1.8s log → spread=1.8s, passes, but dispatch was serial.
+
+**Confirmed structurally.** The measurement boundary is wrong for the question being asked. The test is theatrically rigorous: it looks like a parallelism check, but admits the exact failure mode it was designed to catch.
+
+**Practical caveat:** LLM `task` reasoning typically takes 10-30s per call, not <700ms. The hazard exists but requires unusually fast first actions. The false-pass window is narrow but real — and the plan's own PM4 (line 163) describes this exact scenario ("each individual question still produced authentic 3-way tension when the LLM happened to fire calls in sequence within the test's wall-clock window"). The plan acknowledges the failure mode in the pre-mortem but the acceptance test does not catch it.
+
+**Triage:** **MUST FIX (P0 plan edit, applied before P2 ships)**
+
+**Concrete edit:** Adopt Architect's ratio-based test verbatim. Replace line 379:
+
+```
+[ ] **Parallelism verification (NEW — addresses MF1 / R12 / PM4):** During the first battery question, capture (a) start_ts when each `task` was dispatched (parent's `task` call emit time, logged via tool-call hook or stderr log line) and (b) end_ts when each MAGI's verdict completed (logged by the battery runner). **Pass: max(end_ts) − min(start_ts) ≤ 1.5 × max(end_ts − start_ts per MAGI)**, where the right side is the longest individual task duration. **Fail: ratio > 2.0 indicates serial execution.** Rationale: parallel execution makes total wall time approximate longest-individual; serial execution makes total wall time approximate sum of all three. The 60-second gap between 30s parallel and 90s sequential is unmissable. Secondary check (kept as smoke signal): all 3 first-action timestamps in `query-log.jsonl` within 2 seconds of each other — catches the egregious "runtime queued the calls" case but is insufficient as primary signal. If primary fails: document the gap in `.omc/issues/p2-parallelism-collapse.md`, pin a follow-up to investigate `async.enabled` config or pivot to oh-my-pi `parallel_task` orchestration pattern.
+```
+
+Update PM4 mitigations (line 166-167) to reference the ratio check, not the dispatch-spread check.
+
+**Severity:** HIGH for D1 (tension authenticity is the explicit driver). Confidence: HIGH on structural weakness; MEDIUM on real-world false-pass probability (depends on first-action speed).
+
+**Realist Check:** Worst case is the system ships with degraded parallelism, the battery test passes, the user notices weeks later via `bursty-recent` queries showing serial timestamps, files an issue, and pivots. Detection: slow (week-2+). Mitigated by: PM4's monthly re-check cadence (line 754) acts as a backstop. **Severity stays MUST FIX** because (a) the test is the gate for D1, the explicit highest-priority driver, and (b) the fix is small (ratio swap + capture end timestamps from battery runner). Cheap to do right; expensive to leave wrong.
+
+### NI-3 — Scratch-dir atomicity has no cross-file label consistency check
+
+**Architect's claim:** Line 390's atomicity step writes 4 agents to `.omc/scratch/agents/`, runs unit check on each, then atomic mv. The unit check (`check-magi-structure.sh`) verifies frontmatter/sections/token-budget/structure per file but not cross-file label consistency. A typo (`保守派` instead of `保守者`) in one file vs synthesizer template in another would pass per-file checks but break vote classification silently.
+
+**My verification:**
+- Line 390: `write all 4 modified agent files to .omc/scratch/agents/ first. Verify each passes unit check. Then atomic mv .omc/scratch/agents/*.md agents/ to land all 4 simultaneously.`
+- Line 178: `Tool: simple grep-based check script .omc/qa/check-magi-structure.sh runs after each agent edit.` — per-file scope.
+- Plan does not specify cross-file label consistency check.
+- The risk: synthesizer's S2A template (lines 320-334) and the 2-1 pattern descriptions (line 338) reference labels MELCHIOR/BALTHASAR/CASPER. If `agents/skeptic.md` says `怀疑者/科学家` (correct) and `agents/pre-mortem.md` says `保守派/母親` (typo), each file passes structure check, but synthesizer compares the labels in its templates against the labels emitted by agents — mismatch causes silent mis-classification.
+
+**Confirmed.** The gap is real and the proposed fix is trivial.
+
+**Triage:** **SHOULD FIX (P0 plan edit, applied before P2 ships)**
+
+**Concrete edit:** Add to the atomicity step at line 390 (or as a new step in the verification command sequence at line 393-417):
+
+```
+**Cross-file label-consistency check** (per architect NI-3): Before atomic mv, run:
+```bash
+# Verify the unique-label set across all 4 agent files is exactly the canonical set
+EXPECTED='怀疑者 保守者 反脆弱者 MELCHIOR-1 BALTHASAR-2 CASPER-3'
+ACTUAL=$(grep -hoE '怀疑者|保守者|反脆弱者|MELCHIOR-1|BALTHASAR-2|CASPER-3' .omc/scratch/agents/*.md | sort -u | tr '\n' ' ')
+if [ "$ACTUAL" != "$(echo "$EXPECTED" | tr ' ' '\n' | sort -u | tr '\n' ' ')" ]; then
+  echo "FAIL: label-set mismatch. Expected: $EXPECTED. Got: $ACTUAL"
+  echo "Variants to check: 保守派, 反脆弱派, 怀疑派, 科学派 (typo candidates)"
+  exit 1
+fi
+# Also fail on known typo variants
+grep -hE '保守派|反脆弱派|怀疑派|科学派' .omc/scratch/agents/*.md && {
+  echo "FAIL: typo variant detected"; exit 1
+}
+echo "OK: label set consistent across 4 files"
+```
+
+Mismatches block the atomic mv. The synthesizer's templates (P2.4 lines 320-334) reference the canonical set; per-agent label emission must match.
+```
+
+**Severity:** MEDIUM. Confidence: HIGH. Less than NI-1/NI-2 because the typo would be caught by the integration test (line 184: synthesizer compatibility test feeds 3 hand-crafted MAGI outputs and verifies template selection). However, the integration test is downstream; cross-file check at the atomicity step catches it earlier and cheaper.
+
+**Realist Check:** Worst case is a label typo lands in main, integration test fails, executor reverts the commit and fixes. Cost: 30-minute round-trip. Mitigated by: integration test is a backstop. **Severity SHOULD FIX, not MUST FIX**, but the fix is cheap (5-line bash), so apply at the same time as NI-1 and NI-2.
+
+---
+
+## Iteration Economics
+
+This is iteration 2 of max 5. The decision space:
+
+| Path | Cost | Benefit | Risk |
+|---|---|---|---|
+| **APPROVE-WITH-RESERVATIONS** (this verdict) | Executor applies 3 P0 plan edits (~30 min total) before P2 ships; P1 cleanup ships now | Saves a full P→A→C cycle; preserves 17/17 of iter-1 critical edits already absorbed; iter-2 plan is 7/7 hard gates pass | NI-1 fix is mechanical so executor judgment is sufficient; NI-2 fix is a measurement spec swap — the executor needs to know the ratio formula and capture end_ts (documented in this verdict's edit text) |
+| **ITERATE** (force iter 3) | One more P→A→C cycle (~2-4 hours wall-clock) for ~30 lines of plan edits | Marginal: NI-1/NI-2/NI-3 land in the plan body rather than in `open-questions.md` | Iteration 3 spends one of remaining 3 budget slots; iteration-3 plan grows to ~820 lines with mostly cosmetic changes; risk of introducing iter-3 NI-4/NI-5 from a third revision pass |
+
+**Substance vs polish judgment:** All 3 new issues are smoke-test refinement and atomicity polish. None touch the architectural spine — not the MAGI hybrid division, not the parallel+rebuttal flow, not the BM25-vs-vectors decision, not the deletion-first sequencing. NI-1 is a 2-line contradiction fix. NI-2 is a measurement-spec swap. NI-3 is a 3-line bash addition.
+
+**The iteration churn would be net negative.** Forcing iteration 3 for ~30 lines of polish, when the executor is fully capable of applying these as P0 plan edits before P2 ships, exceeds the cost of the issues themselves. The Architect's APPROVE-WITH-RESERVATIONS implies exactly this: the spine is sound, the smoke-test refinements are surgical, the executor handles them as known blockers gated to P2 acceptance.
+
+**Verdict reasoning summary:** APPROVE on substance (7/7 hard gates, 5/5 soft gates with 2 reservations both tied to NI-1); WITH-RESERVATIONS for the 3 P0 edits the executor applies before P2 ships.
+
+---
+
+## Final Recommendation
+
+**Verdict: APPROVE-WITH-RESERVATIONS** — functionally APPROVE for P1 (cleanup) and the broader plan structure; 3 P0 plan edits required before P2 ships.
+
+**P0 plan edits required (apply before P2 acceptance, executor responsibility, ~30 min total):**
+
+1. **NI-1 fix** — Modify line 382 and line 600 per the edit text in NI-1 above (stub skill at P2 acceptance + real skill at P5.4-pre). Resolves the smoke-test sequencing contradiction.
+2. **NI-2 fix** — Replace line 379 with the ratio-based test (`max(end_ts)−min(start_ts) ≤ 1.5 × max(individual_duration)`); update PM4 mitigations at line 167 to match. Resolves the false-pass hazard.
+3. **NI-3 fix** — Add cross-file label-consistency bash check to the atomicity step at line 390 (or as new verification step). Resolves the silent typo failure mode.
+
+**Documentation flips required (post-Critic, ~5 min):**
+
+4. **ADR Status flip** — Line 702 from "PROPOSED (revision 2) — pending Critic re-review after iteration" to "ACCEPTED (revision 2) — Critic verdict APPROVE-WITH-RESERVATIONS, executor applies P0 edits before P2 ships."
+5. **Open-questions tracker** — Append the 3 P0 edits as `[ ] resolved at P2 ships` items so the tracker reflects the executor's pre-P2 work.
+
+**Path forward:** /ralph executor mode (the plan is executable). Begin with P1 (Via Negativa Cleanup) — independently shippable today, no dependency on the 3 P0 edits. Apply the P0 edits as plan amendments at the start of P2.1 work, then proceed with P2 as written. The 4 verification commands at line 393-417 (boot, list-rules, dispatch, parallelism check) gate the P2 commit.
+
+**If the user prefers a stricter handoff:** the planner can apply the 3 P0 edits as a documentation pass (no architectural work, just text edits to the plan) before handoff to executor — call this iteration 2.5 (lightweight). This is the strict-quality path; the APPROVE-WITH-RESERVATIONS path is the iteration-economics-aware path. User chooses.
+
+---
+
+## Verdict Justification
+
+**Mode of operation:** THOROUGH throughout. No escalation to ADVERSARIAL was warranted — zero critical findings, all iter-1 concerns resolved (CF1 included, which was the iter-1 hard-gate failure), three new issues all surgical and surfaced honestly by the Architect (not hidden in the revision). The plan's iter-2 quality earns a measured tone.
+
+**Realist Check applied to NI-1/NI-2/NI-3:**
+- NI-1 stayed at MUST FIX despite low practical cost (1 round-trip) because internal-consistency contradictions on the second iteration are process failures even if cheap.
+- NI-2 stayed at MUST FIX because the test gates D1, the explicit highest-priority driver, and the fix is small.
+- NI-3 stayed at SHOULD FIX (downgraded from MUST FIX) because the integration test is a backstop, and the typo failure mode is recoverable with one revert. The fix is cheap so apply at the same time as NI-1/NI-2 — but a missed NI-3 alone would not warrant rejection.
+
+**Why APPROVE-WITH-RESERVATIONS not ITERATE:**
+- 7/7 hard gates pass (up from 5/7 in iter 1).
+- 5/5 soft gates pass (up from 2/5 fully passing in iter 1; 2 PASS-WITH-RESERVATIONS now both tied to NI-1's fix).
+- All 17 of my iter-1 specific edits are addressed (zero rejected).
+- All 12 of Architect's iter-1 edits addressed (10 fully, 2 with new-issue caveats the Architect themselves transparently surfaced).
+- NI-1/NI-2/NI-3 are surgical (~30 lines total); none touch the architectural spine.
+- Iteration economics: forcing iter 3 for ~30 lines of polish exceeds the cost of the issues.
+
+**Why APPROVE-WITH-RESERVATIONS not full APPROVE:**
+- NI-1 is a real contradiction; the executor will hit it at P2 acceptance and stop.
+- NI-2 admits a known false-pass; the test gates D1.
+- The 3 P0 edits are not optional polish; they must land before P2 ships.
+- "WITH-RESERVATIONS" is the honest signal: the spine is approved, but the smoke-test refinements are required prerequisites for P2.
+
+**Why APPROVE-WITH-RESERVATIONS not REJECT:** No fundamental direction reversal. No spec violation. No principle invalidation. No research finding contradicted. The plan's spine is sound; the issues are smoke-test mechanics.
+
+---
+
+## Open Questions (unscored, iter 2)
+
+Items that surfaced during iter-2 verification but did not rise to scored findings:
+
+- **Q-iter2-1:** The verification command sequences (e.g., `omp --dispatch task melchior-1 "..."`, `omp --list-rules`, `omp --version`) assume specific oh-my-pi CLI verbs. I did not verify these against the actual `omp` binary on the user's system — they are the Architect's WebFetch-derived assumptions plus plan-author inference. Risk: at P1 verification time, if `omp --version` is not the right command (e.g., it's `omp version` or there's no version flag at all), the boot check needs the real verb. Cheap fix: at P1 start, the executor runs `omp --help` once and confirms the verbs the plan uses.
+- **Q-iter2-2:** The `query-log.jsonl` atomic-append claim relies on `fs.appendFile`'s O_APPEND semantics. Verified for POSIX. The user's environment is Windows-WSL — confirmed POSIX-compliant for filesystem ops, but worth a one-line note in the plan (or in `.omc/incerto/scripts/search.ts` source) that this is the reason `proper-lockfile` was rejected. Not blocking; documentation hygiene.
+- **Q-iter2-3:** PM4's monthly battery re-check cadence (line 754, ADR Follow-ups) is a calendar entry. There is no automation. If the user is busy for 3 months and skips re-checks, silent serial collapse goes undetected for 3 months. Quality-of-life suggestion: consider a `pre-commit` hook or `omp` startup banner that nags about re-check overdue if last battery > 30 days. Not blocking; not even SHOULD FIX. Just noting for ADR Follow-ups.
+- **Q-iter2-4:** The 3-state graduated gate (line 359-362) thresholds are aspirational. State A: <80 chars + greeting markers. State B: ≤200 chars + no decision verbs. State C: everything else. The thresholds are reasonable but not empirically calibrated; line 758 ADR Follow-ups acknowledges this (open-questions.md tracks). Not a finding — flagged for the user's monthly review of MAGI cost telemetry (open-questions.md item).
+- **Q-iter2-5:** The smoke-test stub skill (NI-1 fix) creates `skills/incerto-search/SKILL.md` at P2 acceptance with stub body, then P5.3 fleshes it out. The stub creation should be tracked as a P2-task (not a manual step the executor remembers). Suggest the NI-1 plan edit add a P2.7 sub-task: "Create stub `skills/incerto-search/SKILL.md` (5 lines) for skill-access smoke test at P2 acceptance." The stub body is replaced in P5.3.
+
+These are all post-approval quality items, not blocking findings.
+
+---
+
+*Critic iteration 2 complete. Verdict APPROVE-WITH-RESERVATIONS. Three P0 plan edits required before P2 ships; documented above with concrete edit text. ADR status will flip to ACCEPTED upon executor acknowledgment of the 3 P0 edits. Path forward: /ralph executor mode, begin P1 (independently shippable), apply P0 edits at P2.1 start.*
+
+---
+
+(prior iteration 1 evaluation preserved below)
+
+---
+
+# Critic Evaluation: taleb-pi Execution Plan
+
+**Reviewer:** Critic (oh-my-claudecode:critic)
+**Plan:** `.omc/plans/taleb-pi-execution-plan.md` (519 lines)
+**Spec:** `.omc/specs/deep-interview-taleb-pi-cleanup.md` (8.4% ambiguity, PASSED)
+**Architect Review:** `.omc/plans/architect-review.md` (verdict: ITERATE; 12 edits)
+**Mode:** RALPLAN-DR DELIBERATE (destructive changes)
+**Date:** 2026-05-05
+**Investigation Mode:** ADVERSARIAL (escalated — 1 hard-gate failure + 4 major findings)
+
+---
+
+## Verdict
+
+**ITERATE**
+
+The plan is fundamentally sound: research grounding is rigorous, current-state claims verified, MAGI hybrid design traces cleanly to the cross-validation report, and the 5-phase decomposition matches risk topology. However, **one hard gate fails decisively** (Spec Fidelity / Non-Goals violation in P5.3), one hard gate is at risk (Pre-Mortem completeness), and **three architectural unknowns must be resolved** before executor handoff. The Architect's 12 edits are largely correct; I add three the Architect missed and reject one.
+
+The plan ships at ITERATE rather than REJECT because the gaps are surgically addressable; no decision-driver or research finding requires renegotiation. Estimated revision effort: 1-2 hours.
+
+---
+
+## Pre-commitment Predictions vs Findings
+
+I predicted before reading the plan:
+1. `tools/incerto-search/` recreation in P5.3 is a real spec violation — **CONFIRMED**.
+2. `task` parallelism claim is unverified — **CONFIRMED** (oh-my-pi docs do not specify parent emission semantics).
+3. Subagent skill access is the real architectural unknown — **CONFIRMED**.
+4. Synthesizer S2A may be a relabel — **CONFIRMED** (current file already encodes the insight in one sentence; plan's prose addition lacks an extraction template).
+5. P3 cherry-pick "inherit MAGI labels" justification may be vacuous — **CONFIRMED** (cherry-pick targets contain zero MAGI label references).
+
+Adversarial sweep (escalation triggered) discovered three issues neither I nor the Architect surfaced initially:
+- **Spec self-contradiction on narrative-fallacy-guard TTSR** that the plan does not adjudicate.
+- **Source research recommends vector retrieval (LanceDB+Transformers.js); plan picks BM25 against own research.**
+- **Plan does not specify how `task` calls re-issue the original user question to subagents** — the rule says "with ONLY the user's question," but the executor needs to know the literal mechanism (passed as `task` description argument? Embedded in subagent's frontmatter? The skill's responsibility?).
+
+---
+
+## Hard Gates
+
+| # | Gate | Status | Notes |
+|---|------|--------|-------|
+| 1 | Principle-Option Consistency | **PASS** | Each chosen option (B/B/A/B/C/A/A in O1-O7) traces to a stated driver. The lone tension is O5/P5.3 (recreating `tools/`) but that's a Non-Goals issue, captured in Gate 11 below, not a principle/driver mismatch. |
+| 2 | Fair Alternatives | **PASS** | Each decision lists 3-4 alternatives with non-trivial pros AND cons. Option D in O1 ("PR per phase") is honestly rejected because the dormant single-user context invalidates the value of PR review surface — not strawmanned. The vector-retrieval alternative is **missing from O3** (see Major Finding #2). |
+| 3 | Risk Mitigation Clarity | **PARTIAL PASS** | Risk table (R1-R10) ties each risk to a specific plan element. R3 (BM25 conceptual mismatch) and R4 (pandoc unavailable) have concrete mitigations. R5 (token budget) is testable. **However**, no risk addresses parallelism semantics (Architect G1/G2) or subagent skill access — these belong as R11/R12 and the plan must add them. |
+| 4 | Testable Acceptance Criteria | **PASS** | "≥6/8 produce 2-1 or 1-1-1" is mechanically verifiable. "All 4 agent files pass unit-level check" is delegable to `check-magi-structure.sh`. "recall@5 ≥ 60% on 5 hand-picked queries" is measurable. |
+| 5 | Concrete Verification Steps | **PASS** | Each phase has explicit verification: `omp` boot check, grep audits, battery runs. The phase-as-commit pattern means each verification can be re-run by checking out the commit. |
+| 6 | Pre-Mortem Quality | **PARTIAL PASS** | All 3 scenarios are concrete (not theatrical). PM1's mitigations are actually built into the plan (verification gate, blind-spot rotation, CASPER censor). PM2's mitigations are real engineering work (concept metadata, synonyms.json, recall@5 test). PM3's mitigation is verified (the grep audit is specified, the ordering rationale is post-hoc but the grep pass is real). **Gap**: pre-mortem omits the highest-risk scenario per Architect — silent sequential collapse of "parallel" `task` calls. This is PM4-shaped and missing. |
+| 7 | Expanded Test Plan (4 levels) | **PASS** | Unit (frontmatter, sections, token budget, structure script), Integration (rule loading, skill discovery, agent dispatch, synthesizer template), E2E (8-question battery, factual gate test), Observability (per-MAGI transcripts, query log, run metadata). All 4 levels addressed with concrete artifacts. The check script `.omc/qa/check-magi-structure.sh` is specified by name, not by content — borderline hand-wave but acceptable. |
+
+**Hard gate net: 5 PASS, 2 PARTIAL PASS.**
+
+The 2 partial passes do not flip the verdict to REJECT because:
+- Gate 3: missing risks are additive, not contradictory; plan's existing risk discipline is sound.
+- Gate 6: pre-mortem covers 3 of the 4 highest-risk scenarios; the 4th is recoverable as an added scenario, not a structural failure.
+
+---
+
+## Soft Gates
+
+| # | Gate | Status | Notes |
+|---|------|--------|-------|
+| 8 | Execution Specificity | **PASS** | File paths, line ranges, npm packages, frontmatter snippets, grep patterns all present. The plan reads like a runbook, not a strategy document. |
+| 9 | Architect Concern Resolution | **FAIL → ITERATE** | Architect raised 12 edits, 6 architectural gaps, 4 principle violations, 3 tradeoff tensions. None have been incorporated. ITERATE bar is met by definition — the plan must address Architect concerns before APPROVE. |
+| 10 | Internal Consistency | **PARTIAL PASS** | The plan's deletes (P1) followed by adds (P5) are consistent within plan logic, but P5.3's `tools/` recreation IS a self-contradiction with P1 task 1. The plan acknowledges this in option O5 footnote (line 82) but the rationalization is cosmetic — see Major Finding #1. |
+| 11 | Spec Fidelity | **FAIL** | Plan P5.3 violates Non-Goal "deleting tools/ entirely" (spec line 49). See Critical Finding below. Additionally, plan does not address spec self-contradiction on narrative-fallacy-guard TTSR (see Major Finding #4). |
+| 12 | ADR Stub Completeness | **PASS** | Stub at line 467 captures Status, Decision (TBD), Drivers, Alternatives, Why Chosen (TBD), Consequences (skeleton), Follow-ups (4 specific items). Will be fillable post-approval. |
+
+**Soft gate net: 2 PASS, 1 PARTIAL PASS, 2 FAIL.** The 2 FAILs (Architect concerns + Spec Fidelity) drive the ITERATE verdict.
+
+---
+
+## Critical Findings (blocks execution)
+
+### CF1 — Spec Non-Goal violation: tools/ recreation in P5.3
+
+**Location:** Plan section O5 (line 82), section P5.3 (lines 410-414), section File Manifest (line 510).
+**Evidence:**
+- Spec line 49 (Non-Goals): `Making tools/ "do real work" (deleting tools/ entirely)`.
+- Spec line 60 (Phase 1): `Delete `tools/` directory entirely`.
+- Plan line 82: justification footnote rationalizes that "the principle is 'no useless tools,' not 'no tools at all'" — this is post-hoc reasoning that contradicts the literal spec text.
+- Plan line 510: File Manifest lists `tools/incerto-search/index.ts` under NEW.
+
+**Confidence:** HIGH.
+**Why this matters:** The executor will face an ambiguity gate at P5.3. The dependency graph reads: P1 deletes `tools/`, P5.3 recreates it. A literal reading says "violation"; the footnote says "exception." Without an explicit decision, the executor must choose, and the choice will silently bake in a spec deviation that survives ADR write-up. Worse: this is the exact kind of "convenient leftover" Via Negativa principle (#1) is meant to prevent.
+
+**Note on the deeper signal:** The knowledge system research report `20260505_030047_knowledge_system_research.md:58` itself says `Custom MCP tool in tools/incerto_search/index.ts, matching the existing pattern`. The research was written **before** the spec finalized "delete tools/ entirely." The spec made the decision; the plan tried to walk it back via footnote. **The plan is not entitled to do this unilaterally.**
+
+**Fix (ranked):**
+1. **Preferred:** Move executable to `.omc/incerto/scripts/search.ts`. Skill (`skills/incerto-search/SKILL.md`) instructs the agent to invoke via Bash with documented command pattern. Honors spec literally; the architect proposed this.
+2. **Acceptable:** Move to a clearly non-`tools/` location like `lib/incerto-search/` or `bin/incerto-search.ts`. Add explicit ADR entry stating spec deviation and rationale.
+3. **Reject (do not do this):** The current footnote rationalization. The footnote is not a decision; it's avoidance.
+
+**Realist Check:** Severity is MAJOR-range, not theoretical-CRITICAL — the practical worst case is the executor stops to ask. But because this is the Spec Fidelity hard gate AND the rationalization itself is a tell that something is wrong, the finding earns CRITICAL severity. Mitigated by: trivial fix (move file path).
+
+---
+
+## Major Findings (causes significant rework)
+
+### MF1 — Parallelism semantics unverified, no observability hook
+
+**Location:** Plan P2.6 step 3 (line 286), O1 commitment to "parallel + rebuttal."
+**Evidence:**
+- WebFetch on `github.com/can1357/oh-my-pi`: confirmed `async.enabled: true` exists for "up to 100 concurrent jobs" with a `poll` tool, but **does not document parent emission semantics**.
+- Plan line 286: `Wait for all 3 (oh-my-pi `async.enabled: true` + `task` tool semantics)`. This is the entire architectural argument. Two unverified words (`task` semantics).
+- The Driver D1 (tension authenticity) requires Round 1 parallel — sequential collapses to anchoring. Stage 4 explicitly warns of the 38% domain-only score from sequential pipeline.
+
+**Confidence:** HIGH (that this is unverified). MEDIUM (that it will fail) — the docs are silent, not negative.
+
+**Why this matters:** If the LLM emits 3 `task` calls but the runtime serializes them, P2's E2E acceptance can pass (because the LLM-serialized 3 calls might still produce ≥6/8 disagreement on a single test run — disagreement isn't the same as parallelism), but the system will silently violate the "parallel" property under load or longer conversations. The fault is observability-free.
+
+**Fix:** Adopt Architect's edit #2 verbatim — add an acceptance criterion that captures emission timestamps and asserts <2s spread on Round 1's three `task` calls. Additionally, add `r12` to the risk table (Architect's R12 is correct).
+
+**Realist Check:** Worst case is a system that compiles and ships a degraded-tension MAGI for weeks before the user notices. Detection: silent until empirical disagreement rate is measured at week-2+. Mitigated by: the 8-question battery's empirical disagreement test catches this if the test is run after the rule is in place. Severity stays MAJOR; not CRITICAL because the battery test exists as a backstop.
+
+### MF2 — Source research recommends vector retrieval; plan picks BM25 without acknowledging contradiction
+
+**Location:** Plan section O3 (line 50-58), P5.2 (lines 402-407).
+**Evidence:**
+- `.omc/scientist/reports/20260505_030047_knowledge_system_research.md:18-26`: Top 7 architectures evaluated. **Wiki+Vector hybrid ranks #1 (5.80)**, **LanceDB+Transformers.js #2 (5.75)**. BM25 does not appear in the top 7.
+- Same report line 30: `Recommended Architecture: Two-Layer Hybrid` — explicitly Vector + Wiki.
+- Same report line 35: `@huggingface/transformers + Xenova/all-MiniLM-L6-v2 (ONNX, 384-dim) on CPU`. Resource cost: ~80MB model, <300ms total latency.
+- Spec line 164: `Build BM25 index using `bm25` npm package`. Spec named the package; the spec made the call.
+- Plan O3 alternatives table: lists BM25 variants A-D, but **does not list vector embedding** as an alternative.
+
+**Confidence:** HIGH on the contradiction; MEDIUM on which choice is correct.
+
+**Why this matters:** This is fundamentally an **architectural escalation** that the plan papers over. The spec was written referencing a 12KB BM25 package. The deeper research (also referenced by the spec) found vector retrieval superior on 5/5 weighted dimensions. Architect's Steelman point #3 captures this independently — Taleb's prose is dense in concept-without-keyword passages where lexical match fails.
+
+The plan's O3 implicitly forecloses the vector option without listing it. This is the strawman pattern the Critic Hard Gate #2 (Fair Alternatives) is meant to catch — though I rated #2 as PASS earlier because each LISTED alternative was honestly evaluated. The dishonesty is in the omission.
+
+**Fix (ranked):**
+1. **Preferred:** Add a 5th alternative to O3 — `LanceDB + Transformers.js (Xenova/all-MiniLM-L6-v2, ONNX)`. Honestly evaluate it. Either choose it (and update P5.2-P5.3 accordingly), or document why BM25 wins despite the research's #1 ranking (e.g., "5.80 vs 5.75 is within scoring noise; D2 determinism / re-runnability tips us to BM25; risk borne by the user").
+2. **Acceptable:** Keep BM25 but explicitly acknowledge the research-vs-spec tension in the ADR Consequences > Negative section. Document conditions under which we'd flip to vectors (e.g., "if recall@5 < 60% on Chinese queries, migrate to vector retrieval").
+3. **Reject:** Silent omission. Currently happening.
+
+**Realist Check:** Worst case is acceptable retrieval (BM25 works for keyword-rich queries; PM2 mitigations exist). The choice is reversible (~1-2 days to swap implementations). **Downgrade from CRITICAL to MAJOR** — the plan's choice is defensible given D2 and 12KB footprint, BUT the contradiction with the plan's own cited research must be acknowledged, not papered over.
+
+### MF3 — Subagent skill access semantics unverified (Architect G1)
+
+**Location:** Plan P5.4 (lines 422-424); intersects with skills/magi-tribunal/SKILL.md design.
+**Evidence:**
+- Architect verified via WebFetch that oh-my-pi docs do not document whether subagents spawned via `task` inherit access to parent's skills.
+- Plan P5.4 mandates each MAGI subagent must invoke `incerto_search` before issuing verdict. If subagents don't have skill/tool access, P5.4 is non-functional.
+- The plan's O5 chooses "skill + MCP tool" (option C) explicitly to teach the subagent how to invoke the tool — but the subagent has to *receive* the skill first.
+
+**Confidence:** HIGH that this is unverified; MEDIUM on real failure probability.
+
+**Why this matters:** The 4 prompt techniques (REASON, blind spots, S2A, CoT boundaries) are at agent-prompt level — they apply regardless of skill access. But the Incerto query mandate is the binding constraint that grounds MAGI verdicts in Taleb canon. If subagents can't query, the entire P5 effort produces an unwired feature.
+
+**Fix:** Adopt Architect's edit #7. Add a smoke test BEFORE P5.4 begins: spawn a MAGI subagent in isolation, instruct it to invoke `skill://incerto-search`, observe whether the call succeeds. Document the result. If skill inheritance is broken, document the Bash-call fallback pattern. This is a 30-minute test that prevents days of wasted P5 work.
+
+**Realist Check:** Real worst case is P5 ships, MAGI agents silently skip the Incerto mandate (model "tries" but tool isn't available), verdicts feel less grounded, user notices in week 2-3. Detection: slow; observability via `query-log.json` would catch zero-query MAGI subagents. Severity stays MAJOR.
+
+### MF4 — Spec self-contradiction on narrative-fallacy-guard TTSR not adjudicated
+
+**Location:** Plan does not address; spec lines 35, 63, 419.
+**Evidence:**
+- Spec line 35 (Constraints): `No TTSR for narrative fallacy (MAGI handles it)`.
+- Spec line 63 (Phase 1 acceptance): `narrative fallacy detection moves to TTSR rule`.
+- Spec line 419 (Round 14 decision): `Two new rules: magi-protocol.md (alwaysApply) + narrative-fallacy-guard.md (TTSR)`.
+- Plan line 0-519: zero references to `narrative-fallacy-guard` or a TTSR rule for narrative fallacy. The plan silently chooses spec line 35's interpretation (no TTSR) without acknowledging the contradiction.
+
+**Confidence:** HIGH on the spec contradiction; HIGH on the plan's silent choice.
+
+**Why this matters:** The plan effectively makes a decision the spec failed to make. This may be the right decision — Round 14 likely got overwritten by later interview rounds — but the plan should explicitly say so. Otherwise the executor will read the spec, see "TTSR rule replaces narrative fallacy scanner" three times, and either implement an unspec'd TTSR rule or query for clarification.
+
+**Fix:** Add to plan §1 (Principles) or §6 (P2 task list) an explicit one-line decision: "Spec contradicts itself on narrative-fallacy-guard TTSR (lines 35 vs 63 vs 419). Plan honors line 35 (`No TTSR for narrative fallacy; MAGI's MELCHIOR handles contextually`). Existing `rules/narrative-fallacy.md` (alwaysApply) remains; no new TTSR rule." This is a 2-line addition that closes the ambiguity gate.
+
+**Realist Check:** Worst case is the executor stops to ask, costing one round-trip. Severity is MAJOR-low; could be downgraded to MINOR. Kept at MAJOR because it's a spec-fidelity issue and unaddressed spec contradictions are exactly the failure mode the deep-interview gate is meant to catch — letting one slip through past the Critic is a process failure even if the practical cost is low.
+
+### MF5 — Synthesizer S2A as relabel rather than executable stage (Architect's #6)
+
+**Location:** Plan P2.4 (lines 257-267); current `agents/magi-synthesizer.md:30-37`.
+**Evidence:**
+- Current synthesizer file already encodes the insight: line 37 says `两个 MAGI 都说"条件接受"但条件完全不同 → 实质 1-1-1` — this IS the S2A insight in one sentence.
+- Plan P2.4 adds prose `Stage 1: For each MAGI verdict, extract optimization_dimension, substantive_verdict, condition_content. Discard surface wording, emotional tone, politeness hedges. Stage 2: Classify votes ONLY on extracted structure.`
+- This prose adds nothing executable. The model already has the insight in one sentence; the longer prose without a literal extraction template (e.g., a JSON skeleton or labeled scratchpad) will likely be read as decorative.
+
+**Confidence:** MEDIUM — model behavior under this prompt is empirical. Architect's diagnosis is sound but not falsified.
+
+**Why this matters:** S2A is one of the four "mandatory" prompt techniques per spec. If the implementation lands as decorative prose, the spec's quality gate is met in name only. The cross-validation report and external-context research both prescribe the technique with structural intent.
+
+**Fix:** Adopt Architect's edit #3 verbatim:
+```
+PRE-CLASSIFICATION (S2A Stage 1):
+MELCHIOR  | dimension: ___ | verdict: ___ | conditions: ___
+BALTHASAR | dimension: ___ | verdict: ___ | conditions: ___
+CASPER    | dimension: ___ | verdict: ___ | conditions: ___
+CLASSIFICATION (S2A Stage 2): based on dimension+verdict alignment, vote pattern is: ___
+```
+This makes the two-stage structure executable. The synthesizer must literally fill the table before issuing classification.
+
+**Realist Check:** Worst case is silent quality degradation in vote classification — and 2-1 misclassified as 2-0 due to surface-level conditional matching. Detected via the 8-question battery's vote-pattern review. Severity MAJOR but downgrades to MINOR if Architect's edit #3 is adopted.
+
+---
+
+## Minor Findings (suboptimal but functional)
+
+### mf1 — P3 cherry-pick "inherit MAGI labels" justification is vacuous
+Plan O1 + P3 says P3 happens after P2 so cherry-picked files inherit new MAGI labels. Verified: cherry-pick targets (`rules/cognitive-state-diagnosis.md` and `skills/mental-models/SKILL.md`) contain **zero MAGI label references** (only benign domain prose mentions of `凸性`). The justification is theoretically right but practically vacuous; the real reason for ordering is just orthogonality. Fix: rewrite justification to say "P3 after P2 for orthogonality (cherry-picks have no functional dependency on P2; sequencing is for cognitive simplicity, not technical necessity)."
+
+### mf2 — README.md modification spec is incomplete
+Plan P1 task 7 lists 4 README modifications. Spot-checked: current README line 87-97 lists `/skeptic`, `/barbell`, `/via-negativa`, `/antifragile` as modes — confirmed present. Plan correctly identifies these as needing removal. **However**, README line 78-79 references `tools/` and `extensions/` paths in the directory tree — not enumerated in P1 task 7. Fix: amend P1 task 7 to also include directory-tree updates for `agents/`, `skills/`, `rules/` to reflect P2-P5 final state.
+
+### mf3 — Crystallization concurrency risk overstated
+Architect's G5 / edit #6 mandates `proper-lockfile` semantics for `query-log.json`. Single-user dormant project with one `omp` instance: concurrent writes are improbable. The use of `fs.appendFile` with default JSON-array append is sufficient if the script appends one entry per call (line-delimited JSON would be safer than a single JSON array — recommend `query-log.jsonl` instead). Not blocking; downgrade Architect's edit from MUST to OPTIONAL. Fix: switch from `query-log.json` (single array) to `query-log.jsonl` (one JSON object per line) — this makes append-mode atomic at the OS level.
+
+### mf4 — Pandoc dependency not gated by feature detection
+Plan P5.1 picks pandoc with epub2 fallback, but the ingest script doesn't specify how it detects pandoc availability (PATH lookup? Try-catch on `child_process.execSync('pandoc --version')`?). On the user's Windows-WSL environment, this matters. Fix: explicit feature-detection block at top of `ingest.ts` with a one-line user-facing message.
+
+### mf5 — Token budget for `rules/magi-protocol.md` unspecified (Architect's #11)
+Plan P2.6 prescribes the rule body but lacks a token budget. Other alwaysApply rules in the repo are 1-2KB. If `magi-protocol.md` balloons, it becomes a permanent system-prompt tax that fights D3 (token efficiency). Adopt Architect's edit #11: ≤1500 tokens, enforced by the same unit check as per-MAGI agents.
+
+---
+
+## What's Missing
+
+Gaps the plan does not address:
+
+- **No PM4 covering parallelism collapse.** Pre-mortem covers MAGI agreement (PM1), BM25 conceptual mismatch (PM2), cherry-pick stale references (PM3). The single highest-risk architectural unknown — sequential collapse of "parallel" `task` calls — has no PM scenario. Add PM4: "Six months later, MAGI Round 1 timestamps reveal serialized emission pattern; tension authenticity was 38% all along but the battery test was run when serialization was masked."
+- **No bail-out protocol on partial MAGI failure (Architect G2).** What if 2 of 3 `task` calls return and the third errors? Synthesizer has no template. Add: "On <3 returned outputs, synthesizer emits `[MAGI partial]` template with degraded-mode warning; user sees the available outputs and a flag."
+- **No retention policy on `.omc/qa/runs/` (Architect G4).** If MAGI fires every non-trivial response and each invocation produces 6 transcripts + metadata, a 50-turn conversation produces 300+ files. Specify: only battery runs persist; normal omp runs log only to `query-log.json`; rotation policy on `runs/` (e.g., keep last 10).
+- **No max-iteration cap on P2 verification loop (Architect's #4 edit).** If 6/8 disagreement isn't reached on first run, plan loops back to P2.1-P2.5. No cap. Adopt Architect's bail-out: max 2 revision iterations, then ship at highest-achieved rate with `[P2-WARN]` commit prefix.
+- **No graduated MAGI gate beyond binary trivial/non-trivial (Architect's #5 edit).** Plan P2.6 has 2 states (bypass / full MAGI). Real usage has a third class: "clarification or simple expansion request" (≤200 chars, no decision verbs) → MELCHIOR-only one-shot. Adopt this; it addresses the steelman's point 2 cost concern without abandoning "MAGI on every non-trivial."
+- **No epub re-ingestion path (Architect G3).** If user updates the epub, what regenerates the index? Specify a `--rebuild` flag on `build-index.ts` or document the manual two-script re-run.
+- **No `task` payload specification.** The plan says "fire 3 parallel `task` calls with ONLY the user's question" — but the executor needs to know the literal mechanism. Is the user's question passed as `task` description argument? Embedded in the subagent's frontmatter at runtime? Routed via the skill? This is a documentation gap; the executor will guess.
+- **No backstop if vector-retrieval contradiction isn't resolved.** If MF2's fix #2 is chosen (keep BM25, document tension), the plan should specify the migration trigger (recall@5 < threshold for X consecutive runs → flip to vectors).
+
+---
+
+## Ambiguity Risks
+
+Plan statements with multiple valid interpretations:
+
+- `"surgical edits to existing files"` (Plan O2 Choice B, line 44) → Interpretation A: Edit tool one block at a time across multiple invocations / Interpretation B: Construct full new file content offline, single overwrite.
+  - Risk if A: Architect's T1 hazard — partial conversion mid-P2 leaves system in inconsistent state.
+  - Fix: Adopt Architect's T1 mitigation — write to scratch directory, atomic mv.
+
+- `"trivial questions bypass MAGI"` (P2.6, line 290-291) → Interpretation A: Pre-classification gate is a hard switch (binary). / Interpretation B: A graduated mechanism the executor designs.
+  - Risk if A: Steelman point 2 cost concern materializes; cost balloons. If B: executor over-designs.
+  - Fix: Adopt Architect's edit #5 — explicit third state for clarification/expansion requests.
+
+- `"crystallize at promotion time, not at ingest"` (O6, line 92) → Interpretation A: Crystallization is human-supervised (run script when user feels right). / Interpretation B: Hooks fire when threshold crosses.
+  - Risk if A: User never runs it; wiki layer empty. If B: unwanted LLM calls during normal `omp` use.
+  - Fix: Plan does say "manual trigger first" — make this stronger: "MUST be manual via `bun run scripts/crystallize.ts --since <iso>`; NEVER hook-triggered until empirical demand justifies."
+
+---
+
+## Multi-Perspective Notes
+
+**Executor perspective:** The plan is largely actionable, but blocks on:
+1. Where does `tools/incerto-search/` actually go? (CF1 unresolved)
+2. How do I verify parallelism actually happens? (MF1 needs concrete timestamp test)
+3. Can my MAGI subagents actually call `incerto_search`? (MF3 needs prerequisite smoke test)
+4. The README "目录结构" tree — what's the final state? (mf2 needs amendment)
+
+**Stakeholder perspective:** The plan delivers what the spec asked for in spirit (deletion-first, MAGI core, Incerto grounding), but Spec Fidelity is technically violated at P5.3 and never adjudicated at narrative-fallacy-guard. If the user audits the plan against the spec line-by-line, they will find at least these two deviations. Better to surface and decide than to ship and discover.
+
+**Skeptic perspective:** Architect's Steelman antithesis points 2 and 3 (MAGI cost ~7 LLM calls per turn; BM25 wrong substrate) deserve plan responses, not just acknowledgment. The plan ends each phase with verification but offers no escape valve if a phase's empirical results are mediocre-but-not-failing (e.g., 5/8 disagreement: pass with warning? Re-iterate? Abandon?). The bail-out from Architect's edit #4 is essential.
+
+---
+
+## Architect Concerns Triaged
+
+For each of the 12 Architect-proposed edits:
+
+| # | Architect Edit | Triage | Notes |
+|---|---|---|---|
+| 1 | Move `tools/incerto-search/index.ts` → `.omc/incerto/scripts/search.ts` | **MUST FIX** | This is CF1. Plan cannot ship without resolving. |
+| 2 | Add parallelism timestamp criterion to P2 acceptance | **MUST FIX** | This is MF1's mitigation. The single highest architectural unknown. |
+| 3 | Specify S2A literal extraction template | **MUST FIX** | This is MF5's mitigation. Without this, S2A is decorative. |
+| 4 | Bound verification loop (max 2 iterations) | **MUST FIX** | Without a cap, P2 has unbounded blast radius. The bail-out needs explicit `[P2-WARN]` commit prefix. |
+| 5 | Add third gate state (MELCHIOR-only for clarification/expansion) | **SHOULD FIX** | Real cost mitigation; addresses Steelman point 2. Not blocking but high-value. |
+| 6 | `proper-lockfile` semantics on `query-log.json` | **OPTIONAL** | Single-user dormant project; mf3 above suggests `query-log.jsonl` as simpler fix. Architect's edit is correct but heavy. |
+| 7 | Smoke-test subagent skill access before P5.4 | **MUST FIX** | This is MF3's mitigation. 30-min test prevents days of wasted P5 work. |
+| 8 | Specify retention on `.omc/qa/runs/` | **SHOULD FIX** | What's Missing #3 above. Quality issue, not blocking. |
+| 9 | Add R11 (subagent skill access) | **MUST FIX** | Risk-table integrity. Pairs with edit #7. |
+| 10 | Add R12 (sequential collapse) | **MUST FIX** | Risk-table integrity. Pairs with edit #2. |
+| 11 | Token budget for `rules/magi-protocol.md` | **SHOULD FIX** | mf5 above. Cheap addition; high D3 leverage. |
+| 12 | ADR Consequences > Negative addition | **SHOULD FIX** | Documentation hygiene; small but meaningful. |
+
+**Architect was right on all 12.** None are rejected. The triage breakdown:
+- MUST FIX: 6 (edits #1, #2, #3, #4, #7, #9, #10 — though #9 and #10 pair with #2 and #7 they merit explicit listing)
+- SHOULD FIX: 4 (edits #5, #8, #11, #12)
+- OPTIONAL: 1 (edit #6 — replaceable with simpler `.jsonl` switch)
+- REJECT: 0
+
+I add three Critic-original edits:
+
+13. **Adjudicate spec self-contradiction on narrative-fallacy-guard TTSR.** Add to plan §1 or §6 a one-line decision. (MF4)
+14. **Address vector-retrieval research contradiction.** Either expand O3 with the LanceDB+Transformers.js alternative or add ADR Consequences > Negative entry documenting the spec/research tension. (MF2)
+15. **Add PM4 covering silent sequential collapse.** Pre-mortem must cover the highest-risk scenario, not just the second-tier ones. (Hard Gate 6 partial pass.)
+
+---
+
+## Specific Plan Edits Required
+
+Numbered, surgical, in plan-section order:
+
+1. **Plan O5 (line 82) and P5.3 (lines 410-414):** Move executable to `.omc/incerto/scripts/search.ts` (Architect's path). Skill (`skills/incerto-search/SKILL.md`) instructs the agent to invoke via Bash. Delete the "no useless tools, not no tools at all" footnote rationalization. Update File Manifest (line 510) accordingly.
+
+2. **Plan P2 Acceptance Criteria (line 293-300):** Add criterion: "Parallelism verification — capture start timestamps on Round 1's 3 `task` calls during the first battery question via `query-log.json` or per-call metadata; confirm all 3 calls' start times fall within 2 seconds. If not, audit `async.enabled` configuration and `task` semantics before P2 ships."
+
+3. **Plan P2.4 (lines 257-267):** Replace the prose S2A instruction with a literal extraction template the synthesizer fills before classifying votes:
+   ```
+   PRE-CLASSIFICATION (S2A Stage 1):
+   MELCHIOR  | dimension: ___ | verdict: ___ | conditions: ___
+   BALTHASAR | dimension: ___ | verdict: ___ | conditions: ___
+   CASPER    | dimension: ___ | verdict: ___ | conditions: ___
+   CLASSIFICATION (S2A Stage 2): based on dimension+verdict alignment, vote pattern is: ___
+   ```
+
+4. **Plan P2 Verification Step (line 301):** Add bail-out: "Max 2 revision iterations on prompt set. If ≥6/8 disagreement not reached after 2 iterations, ship at the highest achieved rate with explicit `[P2-WARN] disagreement: X/8` commit prefix; create `.omc/issues/p2-tension-shortfall.md` with the gap analysis."
+
+5. **Plan P2.6 Pre-classification gate (line 291):** Add a third gate state: "Clarification or simple expansion request (≤200 chars AND no decision verbs like 'should I,' 'is it worth,' 'risk') → MELCHIOR-only one-shot, no synthesizer."
+
+6. **Plan P5.4 (line 423):** Add prerequisite: "Before P5.4 begins, smoke-test subagent skill access. Spawn one MAGI subagent in isolation; instruct it to invoke `skill://incerto-search` (or the Bash fallback). If skill inheritance fails, document the Bash invocation pattern that subagents must use; route P5.4's mandate paragraph through that pattern."
+
+7. **Plan §7 Risks (after R10):** Add R11 (subagent skill access unverified, severity HIGH, mitigation is edit #6 above). Add R12 (sequential collapse of parallel `task` calls, severity HIGH, mitigation is edit #2 above).
+
+8. **Plan P2.6 (line 280):** Add token budget: "≤1500 tokens (rule is alwaysApply; permanent system-prompt tax)."
+
+9. **Plan §1 (Principles) or §6 (P2 task list):** Add explicit one-line decision on the spec contradiction: "Spec self-contradicts on narrative-fallacy-guard TTSR (lines 35 vs 63 vs 419). Plan honors line 35: existing `rules/narrative-fallacy.md` (alwaysApply) remains; no new TTSR rule. MELCHIOR-1 handles narrative fallacy contextually within MAGI debate."
+
+10. **Plan O3 (lines 50-58):** Add a 5th alternative — `LanceDB (@lancedb/lancedb) + Transformers.js (Xenova/all-MiniLM-L6-v2 ONNX, 384-dim)`. Honestly evaluate. Either choose it (and update P5.2-P5.3) or document why BM25 wins despite the knowledge research's #1 ranking. If BM25 retained, add to ADR Consequences > Negative: "BM25 chosen over research-recommended vector retrieval for D2 (determinism/re-runnability) and 12KB footprint; migration trigger: recall@5 < 60% on Chinese queries for 3 consecutive battery runs."
+
+11. **Plan §4 (Pre-Mortem):** Add PM4 — "Six months later, MAGI Round 1 timestamps reveal serialized emission pattern. Tension authenticity was 38% all along; battery test masked it because all 3 calls completed within the test's 2-min window." Mitigation: edit #2's parallelism timestamp criterion + R12 above.
+
+12. **Plan §3 ADR Stub Consequences > Negative (line 488):** Add: "Code is subordinate to thinking is bent in P5 to add real executable code (search.ts, ingest.ts, build-index.ts, crystallize.ts); justification is high D1 leverage. Code is bounded to `.omc/incerto/scripts/`."
+
+13. **Plan §5 Observability (lines 156-162):** Specify retention: "Battery runs persist to `.omc/qa/runs/`; normal `omp` runs log only to `query-log.json` (or `.jsonl`). `runs/` rotation: keep last 10 directories, prune older."
+
+14. **Plan P2.1-P2.3 (Surgical edit blocks):** Adopt Architect's T1 atomicity mitigation — write all 4 agent files to `.omc/scratch/agents/` first, then atomic `mv` into `agents/`. Preserves history AND mid-phase atomicity.
+
+15. **Plan P5.5 (Crystallization, line 426-435):** Switch from `query-log.json` (single JSON array) to `query-log.jsonl` (line-delimited). Append-mode is atomic at the OS level. Eliminates need for `proper-lockfile` (Architect's edit #6).
+
+16. **Plan P5.2 (line 402):** Specify pandoc feature detection at top of `ingest.ts` — explicit `try { execSync('pandoc --version') } catch { /* fallback to epub2 */ }` with a single user-facing log line.
+
+17. **Plan P2.6 step 2 (line 285):** Specify the `task` payload mechanism — "Pass user question as the `task` tool's `description` argument verbatim; no preamble, no metadata. The MAGI subagent's frontmatter `name` and `description` already encode their identity."
+
+These 17 edits are all surgical (no architectural rewrites) and address every MUST FIX from Architect's triage plus three Critic-original gaps. After application, the plan should be APPROVE-ready.
+
+---
+
+## Final Recommendation
+
+**Verdict: ITERATE.**
+
+The plan's spine — research-backed MAGI hybrid design, deletion-first sequencing, BM25/Incerto grounding, deliberate-mode pre-mortem + 4-level test plan — is sound. The executor handoff is blocked by:
+
+1. **One hard-gate failure** (Spec Fidelity, CF1).
+2. **Three architectural unknowns** (MF1 parallelism, MF3 subagent skills, MF2 retrieval substrate).
+3. **One unaddressed spec self-contradiction** (MF4).
+4. **One decorative-prose risk** (MF5 S2A as relabel).
+5. **All 12 Architect concerns unaddressed**, of which 6 are MUST FIX.
+
+After applying the 17 edits above, the plan should be APPROVE-ready. Estimated revision time: 1-2 hours of plan editing (no research re-runs needed).
+
+**The user's 17 rounds of interview + 5 stages of research are not wasted by this ITERATE.** The findings are surgical, the fixes are concrete, and the underlying decisions hold. This is exactly the kind of pre-execution review that earns its keep — surfacing 3 architectural unknowns before the executor commits hours to discover them empirically.
+
+If the user prefers a faster path: edits #1-#7 (the 7 MUST FIX items) are sufficient to flip to ACCEPT-WITH-RESERVATIONS. The remaining 10 are quality-of-life. Recommend the user choose between full 17-edit pass (target: APPROVE) or 7-edit minimum (target: ACCEPT-WITH-RESERVATIONS, ship faster).
+
+---
+
+## Verdict Justification
+
+**Mode of operation:** Started in THOROUGH mode. Escalated to ADVERSARIAL after the first hard-gate failure (Spec Fidelity) was confirmed, with 4+ MAJOR findings emerging. ADVERSARIAL sweep added MF2 (vector-retrieval contradiction) and MF4 (spec self-contradiction) plus the missing PM4 — all genuine flaws not in the original Architect review.
+
+**Realist Check recalibrations:**
+- CF1 stayed at CRITICAL despite low practical worst case, because it's a Spec Fidelity hard-gate failure AND the plan's own footnote rationalization is a tell that the plan author knew it was suspect.
+- MF2 (vector retrieval) downgraded from initial CRITICAL to MAJOR — the choice is defensible given D2 determinism, BM25 works for keyword-rich queries, and reversal is a 1-2 day swap. But the silent omission from O3 alternatives is a real Fair-Alternatives violation.
+- MF4 stayed at MAJOR despite low practical cost, because letting an unadjudicated spec contradiction through past the Critic is a process failure even if the practical impact is one round-trip.
+
+**Why ITERATE not REJECT:** The hard-gate failure is one Non-Goals violation that's trivially fixable (move file path). No fundamental direction reversal needed. No research finding contradicted. No principle invalidated. The 17 edits are all surgical.
+
+**Why ITERATE not APPROVE:** Six of Architect's 12 concerns are MUST FIX. Three Critic-original findings (MF2, MF4, missing PM4) require decisions before execution. The plan currently passes 5/7 hard gates and 2/5 soft gates — short of APPROVE bar.
+
+---
+
+## Open Questions (unscored)
+
+Speculative follow-ups and findings I could not verify with high confidence:
+
+- **Q1:** Does the deepseek-v4-flash model (configured as `task` in `config.yml:5`) handle Chinese MAGI agent prompts as well as Anthropic Opus would? Plan assumes yes; no empirical test specified. Could affect tension authenticity if model can't anchor irreconcilable values in Chinese.
+- **Q2:** The pre-classification gate in P2.6 — is "≤80 chars + greeting markers" empirically calibrated, or aspirational? Looks aspirational. Should be A/B-tested on real query corpus before fixing the threshold.
+- **Q3:** The "75% projected disagreement" from Stage 4 is a simulation, not a measurement. The plan's ≥6/8 (75%) acceptance bar tracks the simulation. Could the bar be unrealistic? Plan acknowledges this in the steelman; bail-out edit (#4) handles it if so.
+- **Q4:** Plan claims `bm25` npm package is 12KB, zero deps. I did not verify on npm; trust the spec's research. If the package has actually been deprecated or has security issues, swap is needed. Recommend a quick `npm view bm25` before P5.2 commits.
+- **Q5:** The `incerto-5-book-bundle.epub:Zone.Identifier` file is a Windows ADS artifact that exists in the repo. Should also be in `.gitignore` (plan P1 task 9 only mentions the `.epub` itself; Zone.Identifier sidecar should be added too).
+
+---
+
+*Critic evaluation complete. Verdict ITERATE. 17 specific plan edits required. Plan can flip to APPROVE after edit application; estimated 1-2 hours.*
