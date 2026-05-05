@@ -10,23 +10,32 @@ triggers:
 
 # MAGI Tribunal Skill
 
-## When to invoke
+## Mandatory execution rule
 
-- The user faces a **high-stakes irreversible decision** (the path is hard to undo).
-- The user's question **spans multiple optimization dimensions** (evidence quality + survival + opportunity).
-- The user needs to see **their own thinking blind spots**, not just an answer.
-- The user says "give me a full analysis" or "look at this from different angles."
+**When this skill is activated — whether via `/magi`, keyword trigger, or skill routing — always run the full 3-agent tribunal.** Do not skip, abbreviate, or replace it with a single-agent response — regardless of how simple, low-stakes, or reversible you judge the decision to be. The user chose to invoke the tribunal; honor that choice unconditionally. Do not substitute your own analysis for the tribunal, even if you believe you can produce equivalent output.
+
+The only exception is a purely factual question with no decision component (see gate below).
+
+**No pre-tribunal analysis.** Do NOT analyze, comment on, or pre-answer the user's question before running the tribunal. Go straight to Phase 1 after the factual gate. The orchestrator's opinion anchors the MAGI agents and defeats independence.
+
+## When the tribunal is most valuable
+
+These conditions describe when `/magi` produces the highest signal — they are NOT prerequisites:
+
+- The user faces a high-stakes irreversible decision.
+- The question spans multiple optimization dimensions (evidence quality + survival + opportunity).
+- The user needs to see their own thinking blind spots, not just an answer.
 
 ## Pre-classification gate (factual question filter)
 
-Before invoking the tribunal, check whether the question is purely factual with no value or decision component.
+Before running the tribunal, check whether the question is purely factual with no value or decision component.
 
-- "What is the capital of France?" — factual; main agent answers directly, skip the tribunal.
+- "What is the capital of France?" — factual; answer directly, skip the tribunal.
 - "What were Q3 revenue numbers?" — factual; skip.
 - "Should I take this job?" — decision; run the tribunal.
-- "Is this strategy worth the risk?" — decision; run the tribunal.
+- "买A还是B?" — decision (even if low-stakes); run the tribunal.
 
-The tribunal is wasted on settled facts. Run it only when there is a real decision and the optimization dimensions could clash.
+The tribunal is wasted on settled facts. But any question involving a choice, tradeoff, or preference is a decision — run it.
 
 ## Invocation
 
@@ -68,7 +77,33 @@ The Synthesizer receives all six outputs (3 Phase 1 verdicts + 3 Phase 2 rebutta
 
 ### Phase 4 — Output
 
-Final verdict rendered in the chosen template. The user sees the disagreement structure, the action consensus, and the reframed question — not a smoothed answer.
+Final verdict rendered in the chosen template. Present the Synthesizer's output verbatim — do NOT add summaries, interpretations, or "一句话总结" after the verdict block. The user sees the tribunal's raw output, not the orchestrator's editorial.
+
+## Task tool configuration (critical for structured output)
+
+When spawning MAGI agents via the `task` tool, you **MUST** pass the `schema` parameter **in every phase** — Phase 1, Phase 2, AND Phase 3. Without it, agent output is lost (yield returns `{}`).
+
+The `schema` parameter **MUST** be a JSON string (not an object).
+
+**Phase 1 and Phase 2** (MELCHIOR-1, BALTHASAR-2, CASPER-3):
+```json
+{
+  "agent": "task",
+  "schema": "{\"properties\": {\"verdict\": {\"metadata\": {\"description\": \"Full MAGI analysis\"}, \"type\": \"string\"}}}",
+  "tasks": [...]
+}
+```
+
+**Phase 3** (Synthesizer) — do NOT omit schema here:
+```json
+{
+  "agent": "task",
+  "schema": "{\"properties\": {\"synthesis\": {\"metadata\": {\"description\": \"Full synthesizer verdict\"}, \"type\": \"string\"}}}",
+  "tasks": [...]
+}
+```
+
+Each task assignment **MUST** end with: "When done, call `yield` with your complete analysis in `result.data.verdict`" (or `result.data.synthesis` for the Synthesizer). Without this, agents write plain text and the yield call returns empty data.
 
 ## Anti-homogenization guarantees
 
@@ -82,12 +117,14 @@ The system does not use temperature differences. Temperature differences add noi
 
 ## Subagent map
 
-| MAGI                        | File                          | Role                                |
-|-----------------------------|-------------------------------|-------------------------------------|
-| MELCHIOR-1 (Empirical Skeptic)   | `agents/skeptic.md`             | Evidence audit + alternative hypotheses |
-| BALTHASAR-2 (Tail-Risk Guardian) | `agents/pre-mortem.md`          | Pre-mortem + via negativa               |
-| CASPER-3 (Convexity Seeker)      | `agents/antifragility-scout.md` | Payoff curvature + barbell + censor     |
-| Synthesizer                      | `agents/magi-synthesizer.md`    | S2A filtering + structured verdict      |
+Spawn agents by name — do NOT read agent definition files manually. The `task` tool resolves named agents automatically via `discoverAgents()`.
+
+| MAGI                        | Agent name              | Role                                |
+|-----------------------------|-------------------------|-------------------------------------|
+| MELCHIOR-1 (Empirical Skeptic)   | `skeptic`                 | Evidence audit + alternative hypotheses |
+| BALTHASAR-2 (Tail-Risk Guardian) | `pre-mortem`              | Pre-mortem + via negativa               |
+| CASPER-3 (Convexity Seeker)      | `antifragility-scout`     | Payoff curvature + barbell + censor     |
+| Synthesizer                      | `magi-synthesizer`        | S2A filtering + structured verdict      |
 
 ## Output quality standards
 
